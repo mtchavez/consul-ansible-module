@@ -6,7 +6,21 @@
   sudo: False
   vars_files:
     - group_vars/consul
+
   tasks:
 
     - name: Set value for key
       consul_kv: action=put key=foo value=bar
+
+    - name: Set value for nested key
+      consul_kv: action=put key=foo/bar/baz value=inglebert
+
+    - name: Set key without value
+      consul_kv: action=put key=foo
+      ignore_errors: true
+
+    - name: Delete key
+      consul_kv: action=delete key=foo
+
+    - name: Delete unknown key
+      consul_kv: action=delete key=what/nope/maybe/nah

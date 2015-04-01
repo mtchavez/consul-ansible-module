@@ -100,7 +100,8 @@ def main():
     req = urllib2.Request(url=url)
     if action == PUT:
         req = urllib2.Request(url=url, data=value)
-        req.get_method = lambda: PUT
+    if action != GET:
+        req.get_method = lambda: action
 
     try:
         opener = urllib2.build_opener(urllib2.HTTPHandler)
@@ -109,10 +110,10 @@ def main():
         module.fail_json(msg="API call failed: %s" % str(e))
 
     response_body = response.read()
-    if action == PUT and response_body == 'true':
+    if action != GET and response_body == 'true':
         module.exit_json(changed=True, succeeded=True, key=key, value=value)
     else:
-        module.fail_json(msg="Failed to update value for key: %s because %s" % (key, response_body))
+        module.fail_json(msg="Failed %s key: %s because %s" % (action, key, response_body))
 
 
 # import module snippets
