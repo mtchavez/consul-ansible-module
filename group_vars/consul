@@ -1,0 +1,7 @@
+---
+
+consul_host: "127.0.0.1"
+consul_api_port: 8500
+consul_api_ver: "v1"
+consul_api_kv_url: "http://{{consul_host}}:{{consul_api_port}}/{{consul_api_ver}}/kv"
+# vim: ft=yaml:

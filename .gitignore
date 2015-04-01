@@ -1,0 +1,6 @@
+# Consul artifacts
+raft
+serf
+tmp
+checkpoint-signature
+dist
