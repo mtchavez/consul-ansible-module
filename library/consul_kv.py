@@ -36,14 +36,34 @@ options:
     description:
       - HTTP verb [GET, PUT, DELETE]
     required: true
+  dc:
+    desription:
+      - The datacenter to use
+    required: false
+    default: dc1
+  host:
+    description:
+      - Consul host
+    required: true
+    default: 127.0.0.1
   key:
     description:
       - Key to interact with in K/V store
     required: true
+  port:
+    description:
+      - Consul API port
+    required: true
+    default: 8500
   value:
     description:
       - Value to set when adding or updating a key
     required: false
+  version:
+    description:
+      - Consul API version
+    required: true
+    default: v1
 
 # informational: requirements for nodes
 requirements: [ urllib2 ]
