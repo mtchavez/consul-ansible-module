@@ -15,6 +15,17 @@
     - name: Set value for nested key
       consul_kv: action=put key=foo/bar/baz value=inglebert
 
+    - name: Get value
+      consul_kv: action=get key=foo
+      register: foo_key
+
+    - name: Debug gotten value
+      debug: var=foo_key
+      when: foo_key is defined
+
+    - name: Debug values
+      debug: var=foo_key.value
+
     - name: Set key without value
       consul_kv: action=put key=foo
       ignore_errors: true

@@ -18,6 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 
+import base64
+import json
 import string
 
 
@@ -48,7 +50,14 @@ requirements: [ urllib2 ]
 '''
 
 EXAMPLES = '''
+# PUT a value for a key
 - consul_kv: action=put key=foo value=bar
+
+# GET a value for a key
+- consul_kv: action=get key=foo/bar/baz
+
+# DELETE a key
+- consul_kv: action=delete key=foo/tmp
 '''
 
 #
@@ -112,6 +121,12 @@ def main():
     response_body = response.read()
     if action != GET and response_body == 'true':
         module.exit_json(changed=True, succeeded=True, key=key, value=value)
+    elif action == GET:
+        parsed_response = json.loads(response_body)
+        # Decode values
+        for obj in parsed_response:
+            obj['Value'] = base64.decodestring(obj.get('Value', ''))
+        module.exit_json(changed=True, succeeded=True, key=key, value=parsed_response)
     else:
         module.fail_json(msg="Failed %s key: %s because %s" % (action, key, response_body))
 
