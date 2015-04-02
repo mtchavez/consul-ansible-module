@@ -3,6 +3,6 @@ python:
   - "2.7"
 install:
   - "pip install -r requirements.txt"
+  - "make ci"
 before_script:
-  - "./bin/consul agent --server=true --bootstrap-expect=1 --data-dir=."
 script: ansible-playbook -i ./hosts test-consul.yml
