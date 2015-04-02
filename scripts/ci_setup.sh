@@ -13,6 +13,6 @@ chmod +x $PWD/bin/consul
 
 export PATH=$PATH:$PWD/bin
 
-consul agent --server=true --bootstrap-expect=1 --data-dir=$PWD $
+consul agent --server=true --bootstrap-expect=1 --data-dir=$PWD &
 
 # vim: ft=sh:
