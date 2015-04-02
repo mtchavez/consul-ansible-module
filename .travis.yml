@@ -1,9 +1,9 @@
 language: python
 python:
   - "2.7"
-sudo: true
+sudo: false
 install:
   - "pip install -r requirements.txt"
-  - "sudo make ci"
+  - "make ci"
 before_script:
 script: ansible-playbook -i ./hosts test-consul.yml
