@@ -1,5 +1,8 @@
 # Consul K/V Ansible Module
 
+[![Latest Version](http://img.shields.io/github/release/mtchavez/consul-ansible-module.svg?style=flat-square)](https://github.com/mtchavez/consul-ansible-module/releases)
+[![Build Status](https://travis-ci.org/mtchavez/consul-ansible-module.svg?branch=master)](https://travis-ci.org/mtchavez/consul-ansible-module)
+
 An Ansible module to interact with consul's k/v API from your playbooks and roles.
 
 ## Usage
