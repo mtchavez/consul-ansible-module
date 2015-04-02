@@ -77,7 +77,6 @@ Then you can run the test playbook with `ansible-playbook -i ./hosts test-consul
 ## TODO
 
 * Handle allowed URL params for API endpoints
-* Handle datacenter param
 * Handle sessions
   * Locking
   * Releasing
