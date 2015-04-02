@@ -12,7 +12,7 @@ CONSUL_DL_URL=https://dl.bintray.com/mitchellh/consul/${CONSUL_VER}_$(uname -s)_
 curl -L $CONSUL_DL_URL > $PWD/bin/consul
 chmod +x $PWD/bin/consul
 
-PATH=$PATH:$PWD/bin
+export PATH=$PATH:$PWD/bin
 
 consul agent --server=true --bootstrap-expect=1 --data-dir=.
 
