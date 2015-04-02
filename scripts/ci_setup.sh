@@ -10,6 +10,6 @@ CONSUL_DL_URL=https://dl.bintray.com/mitchellh/consul/${CONSUL_VER}_$(uname -s)_
 curl -L $CONSUL_DL_URL > /usr/local/bin/consul
 chmod ugo+x /usr/local/bin/consul
 
-consul agent --server=true --bootstrap-expect=1 --data-dir=.
+consul agent --server=true --bootstrap-expect=1 --data-dir=$PWD
 
 # vim: ft=sh:
