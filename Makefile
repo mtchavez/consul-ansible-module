@@ -1,4 +1,4 @@
 ci:
-    ./scripts/ci_setup.sh
+	./scripts/ci_setup.sh
 
 .PHONY: ci
