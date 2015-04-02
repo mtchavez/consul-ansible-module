@@ -14,5 +14,6 @@ chmod +x $PWD/bin/consul
 export PATH=$PATH:$PWD/bin
 
 consul agent --server=true --bootstrap-expect=1 --data-dir=$PWD &
+sleep 5
 
 # vim: ft=sh:
