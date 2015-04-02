@@ -13,7 +13,13 @@ chmod +x $PWD/bin/consul
 
 export PATH=$PATH:$PWD/bin
 
-consul agent --server=true --bootstrap-expect=1 --data-dir=$PWD &
+# DC1
+consul agent --server=true --bootstrap-expect=1 --data-dir=$PWD/ci/consul/dc1 &
+
+sleep 5
+
+consul agent --server=true --bootstrap-expect=1 --data-dir=$PWD/ci/consul/dc2 --config-file=$PWD/ci/consul/dc2/config.json &
+
 sleep 5
 
 # vim: ft=sh:

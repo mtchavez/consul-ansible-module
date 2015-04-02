@@ -66,7 +66,7 @@ options:
     default: v1
 
 # informational: requirements for nodes
-requirements: [ urllib2 ]
+requirements: [ urllib, urllib2 ]
 '''
 
 EXAMPLES = '''
@@ -89,6 +89,8 @@ class ConsulKV(object):
 
     ALLOWED_ACTIONS = ['GET', 'PUT', 'DELETE']
     GET, PUT, DELETE = ALLOWED_ACTIONS
+
+    ALLOWED_PARAMS = ['dc']
 
     def __init__(self, module):
         """Takes an AnsibleModule object to set up Consul K/V interaction"""
@@ -137,12 +139,20 @@ class ConsulKV(object):
             opener = urllib2.build_opener(urllib2.HTTPHandler)
             response = opener.open(req)
         except urllib2.URLError, e:
-            module.fail_json(msg="API call failed: %s" % str(e))
+            self.module.fail_json(msg="API call failed: %s" % str(e))
 
         response_body = response.read()
         self._handle_response(response_body)
 
+    def _query_params(self):
+        params = {}
+        if self.dc != 'dc1':
+            params['dc'] = self.dc
+        return params
+
     def _setup_request(self):
+        params = urllib.urlencode(self._query_params())
+        self.api_url = self.api_url + '/?' + params
         req = urllib2.Request(url=self.api_url)
         if self.action == self.PUT:
             req = urllib2.Request(url=self.api_url, data=self.value)
