@@ -1,0 +1,13 @@
+{
+  "datacenter": "dc2",
+  "node_name": "dc2.local",
+  "server": true,
+  "ports": {
+      "dns": 8610,
+      "http": 8510,
+      "rpc": 8410,
+      "serf_lan": 8311,
+      "serf_wan": 8312,
+      "server": 8310
+  }
+}
