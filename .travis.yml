@@ -3,9 +3,10 @@ python:
   - "2.7"
 install:
   - "pip install -r requirements.txt"
+  - "mkdir -p $PWD/bin"
+  - "curl -L https://dl.bintray.com/mitchellh/consul/${CONSUL_VER}_$(uname -s)_$(uname -m).zip > $PWD/bin/consul"
+  - "chmod +x $PWD/bin/consul"
+  - "export PATH=$PATH:$PWD/bin"
 before_script:
-  - "curl -L https://dl.bintray.com/mitchellh/consul/${CONSUL_VER}_$(uname -s)_$(uname -m).zip > /tmp/consul"
-  - "chmod +x /tmp/consul"
-  - "export PATH=$PATH:/tmp/:$PWD"
   - "consul agent --server=true --bootstrap-expect=1 --data-dir=."
 script: ansible-playbook -i ./hosts test-consul.yml
