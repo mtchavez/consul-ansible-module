@@ -8,9 +8,9 @@ CONSUL_VER=0.5.0
 CONSUL_DL_URL=https://dl.bintray.com/mitchellh/consul/${CONSUL_VER}_linux_amd64.zip
 
 curl -L $CONSUL_DL_URL > $PWD/bin/consul
-chmod ugo+x $PWD/bin/consul
+chmod +x $PWD/bin/consul
 
-export PATH=$PWD/bin:$PATH
+export PATH=$PATH:$PWD/bin
 
 consul agent --server=true --bootstrap-expect=1 --data-dir=$PWD
 
