@@ -4,6 +4,6 @@ python:
 sudo: true
 install:
   - "pip install -r requirements.txt"
-  - "make ci"
+  - "sudo make ci"
 before_script:
 script: ansible-playbook -i ./hosts test-consul.yml
