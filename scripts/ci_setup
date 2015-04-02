@@ -8,4 +8,4 @@ CONSUL_DL_URL=https://dl.bintray.com/mitchellh/consul/${CONSUL_VER}_$(uname -s)_
 
 curl -L $CONSUL_DL_URL
 
-consul agent --server=true --bootstrap-expect=1 --data-dir=. &
+consul agent --server=true --bootstrap-expect=1 --data-dir=.
