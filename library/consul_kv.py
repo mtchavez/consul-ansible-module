@@ -85,8 +85,83 @@ EXAMPLES = '''
 #
 
 
-def _build_url(params):
-    return "http://%s:%s/%s/kv/%s" % (params['host'], params['port'], params['version'], params['key'])
+class ConsulKV(object):
+
+    ALLOWED_ACTIONS = ['GET', 'PUT', 'DELETE']
+    GET, PUT, DELETE = ALLOWED_ACTIONS
+
+    def __init__(self, module):
+        """Takes an AnsibleModule object to set up Consul K/V interaction"""
+        self.module = module
+        self.action = string.upper(module.params.get('action', ''))
+        self.key = module.params.get('key', '')
+        self.value = module.params.get('value', '')
+        self.host = module.params.get('host', '127.0.0.1')
+        self.dc = module.params.get('dc', 'dc1')
+        self.port = module.params.get('port', 8500)
+        self.version = module.params.get('version', 'v1')
+        self._build_url()
+
+    def run_cmd(self):
+        self.validate()
+        self._make_api_call()
+
+    def validate(self):
+        # Check action is allowed
+        if not self.action or self.action not in self.ALLOWED_ACTIONS:
+            self.module.fail_json(msg='Action is required and must be one of GET, PUT, DELETE')
+        # A key is required for any call so make sure one exists
+        if not self.key:
+            self.module.fail_json(msg='A key is required to interact with the k/v API')
+        # Validate action being used
+        # ie self._validate_get(), self._validate_put(), self._validate_delete()
+        getattr(self, "_validate_%s" % string.lower(self.action))
+
+    def _build_url(self):
+        self.api_url = "http://%s:%s/%s/kv/%s" % (self.host, self.port, self.version, self.key)
+
+    def _validate_get(self):
+        pass
+
+    def _validate_put(self):
+        if not self.value:
+            self.module.fail_json(msg='A value is required when using PUT')
+
+    def _validate_delete(self):
+        pass
+
+    def _make_api_call(self):
+        req = self._setup_request()
+
+        try:
+            opener = urllib2.build_opener(urllib2.HTTPHandler)
+            response = opener.open(req)
+        except urllib2.URLError, e:
+            module.fail_json(msg="API call failed: %s" % str(e))
+
+        response_body = response.read()
+        self._handle_response(response_body)
+
+    def _setup_request(self):
+        req = urllib2.Request(url=self.api_url)
+        if self.action == self.PUT:
+            req = urllib2.Request(url=self.api_url, data=self.value)
+        if self.action != self.GET:
+            req.get_method = lambda: self.action
+
+        return req
+
+    def _handle_response(self, response_body):
+        if self.action != self.GET and response_body == 'true':
+            self.module.exit_json(changed=True, succeeded=True, key=self.key, value=self.value)
+        elif self.action == self.GET:
+            parsed_response = json.loads(response_body)
+            # Decode values
+            for obj in parsed_response:
+                obj['Value'] = base64.decodestring(obj.get('Value', ''))
+            self.module.exit_json(changed=True, succeeded=True, key=self.key, value=parsed_response)
+        else:
+            self.module.fail_json(msg="Failed %s key: %s because %s" % (self.action, self.key, response_body))
 
 
 def main():
@@ -104,51 +179,12 @@ def main():
         supports_check_mode=True
     )
 
-    ALLOWED_ACTIONS = ['GET', 'PUT', 'DELETE']
-    GET, PUT, DELETE = ALLOWED_ACTIONS
-
-    action = string.upper(module.params.get('action', ''))
-    if not action or action not in ALLOWED_ACTIONS:
-        module.fail_json(msg='Action is required and must be one of GET, PUT, DELETE')
-
-    key = module.params.get('key', '')
-    if not key:
-        module.fail_json(msg='A key is required to interact with the k/v API')
-
-    value = module.params.get('value', '')
-    if action == PUT and not value:
-        module.fail_json(msg='A value is required when using PUT')
-
     # If we're in check mode, just exit pretending like we succeeded
     if module.check_mode:
         module.exit_json(changed=False)
 
-    # Send the data to NewRelic
-    url = _build_url(module.params)
-
-    req = urllib2.Request(url=url)
-    if action == PUT:
-        req = urllib2.Request(url=url, data=value)
-    if action != GET:
-        req.get_method = lambda: action
-
-    try:
-        opener = urllib2.build_opener(urllib2.HTTPHandler)
-        response = opener.open(req)
-    except urllib2.URLError, e:
-        module.fail_json(msg="API call failed: %s" % str(e))
-
-    response_body = response.read()
-    if action != GET and response_body == 'true':
-        module.exit_json(changed=True, succeeded=True, key=key, value=value)
-    elif action == GET:
-        parsed_response = json.loads(response_body)
-        # Decode values
-        for obj in parsed_response:
-            obj['Value'] = base64.decodestring(obj.get('Value', ''))
-        module.exit_json(changed=True, succeeded=True, key=key, value=parsed_response)
-    else:
-        module.fail_json(msg="Failed %s key: %s because %s" % (action, key, response_body))
+    consulkv = ConsulKV(module)
+    consulkv.run_cmd()
 
 
 # import module snippets
