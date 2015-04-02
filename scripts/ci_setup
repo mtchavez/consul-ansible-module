@@ -9,4 +9,7 @@ CONSUL_DL_URL=https://dl.bintray.com/mitchellh/consul/${CONSUL_VER}_$(uname -s)_
 curl -L $CONSUL_DL_URL > ./consul
 chmod +x ./consul
 
+export PATH=$PWD:$PATH
 consul agent --server=true --bootstrap-expect=1 --data-dir=.
+
+# vim: ft=sh:
