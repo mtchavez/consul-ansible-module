@@ -8,5 +8,5 @@ install:
   - "chmod +x ./bin/consul"
   - "export PATH=$PATH:$PWD/bin"
 before_script:
-  - "export PATH=$PATH:$PWD/bin && consul agent --server=true --bootstrap-expect=1 --data-dir=."
+  - "./bin/consul agent --server=true --bootstrap-expect=1 --data-dir=."
 script: ansible-playbook -i ./hosts test-consul.yml
