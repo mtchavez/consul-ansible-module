@@ -4,4 +4,4 @@ python:
 install:
   - "pip install -r requirements.txt"
   - "./scripts/ci_setup"
-script: ansible-playbook test-consul.yml
+script: ansible-playbook -i ./hosts test-consul.yml
