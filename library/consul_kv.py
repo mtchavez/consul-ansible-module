@@ -22,6 +22,8 @@ import base64
 import json
 import string
 
+from collections import OrderedDict
+
 
 DOCUMENTATION = '''
 ---
@@ -68,6 +70,10 @@ options:
       - Recurse flag for DELETE or GET actions
     required: false
     default: False
+  separator:
+    description:
+      - Separator to use when listing keys for a GET
+    required: false
   value:
     description:
       - Value to set when adding or updating a key
@@ -98,6 +104,10 @@ EXAMPLES = '''
 # GET keys for prefix
 - consul_kv: action=get key=bar keys=true
   register: bar_keys
+
+# GET keys up to separator
+- consul_kv: action=get key=bar/ keys=true separator='/'
+  register: separator_keys
 '''
 
 #
@@ -123,6 +133,7 @@ class ConsulKV(object):
         self.keys = module.params.get('keys', False)
         self.port = module.params.get('port', 8500)
         self.recurse = module.params.get('recurse', False)
+        self.separator = module.params.get('separator', None)
         self.value = module.params.get('value', '')
         self.version = module.params.get('version', 'v1')
         self._build_url()
@@ -168,7 +179,7 @@ class ConsulKV(object):
         self._handle_response(response, response_body)
 
     def _query_params(self):
-        params = {}
+        params = OrderedDict({})
         if self.dc != 'dc1':
             params['dc'] = self.dc
         if self.action == self.DELETE and self.recurse:
@@ -176,6 +187,8 @@ class ConsulKV(object):
         if self.action in [self.DELETE, self.PUT] and self.cas:
             params['cas'] = self.cas
         if self.action == self.GET and self.keys:
+            if self.separator:
+                params['separator'] = self.separator
             params['keys'] = 'true'
         return params
 
@@ -221,6 +234,7 @@ def main():
             keys=dict(require=False, default=False, type='bool'),
             port=dict(require=False, default=8500),
             recurse=dict(require=False, default=False, type='bool'),
+            separator=dict(require=False),
             value=dict(required=False),
             version=dict(required=False, default='v1'),
         ),
