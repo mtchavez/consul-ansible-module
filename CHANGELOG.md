@@ -2,6 +2,7 @@
 
 * Datacenter param added
 * Recurse DELETE of directory
+* GET all keys for a given prefix
 
 # v0.0.1
 

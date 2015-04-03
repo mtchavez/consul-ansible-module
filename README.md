@@ -97,5 +97,4 @@ Then you can run the test playbook with `ansible-playbook -i ./hosts test-consul
 * Handle sessions
   * Locking
   * Releasing
-* GET only keys under a given prefix
-* Recursive GET for keys under a given prefix
+* GET keys up to a certain separator
