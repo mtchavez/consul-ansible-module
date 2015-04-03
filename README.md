@@ -88,6 +88,5 @@ Then you can run the test playbook with `ansible-playbook -i ./hosts test-consul
 * Handle sessions
   * Locking
   * Releasing
-* Recursive deleting
 * GET only keys under a given prefix
 * Recursive GET for keys under a given prefix
