@@ -4,6 +4,7 @@
 * Recurse DELETE of directory
 * GET all keys for a given prefix
 * DELETE with check and set
+* GET keys up to separator
 
 # v0.0.1
 

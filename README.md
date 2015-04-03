@@ -25,6 +25,10 @@ Examples
 # GET keys for prefix
 - consul_kv: action=get key=bar keys=true
   register: bar_keys
+
+# GET keys up to separator
+- consul_kv: action=get key=bar/ keys=true separator='/'
+  register: separator_keys
 ```
 
 ## Documentation
@@ -74,6 +78,10 @@ options:
       - Recurse flag for DELETE or GET actions
     required: false
     default: False
+  separator:
+    description:
+      - Separator to use when listing keys for a GET
+    required: false
   value:
     description:
       - Value to set when adding or updating a key
@@ -101,4 +109,3 @@ Then you can run the test playbook with `ansible-playbook -i ./hosts test-consul
 * Handle sessions
   * Locking
   * Releasing
-* GET keys up to a certain separator
