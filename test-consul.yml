@@ -23,6 +23,14 @@
       debug: var=foo_key
       when: foo_key is defined
 
+    - name: Get keys for prefix
+      consul_kv: action=get key=bar keys=true
+      register: bar_keys
+
+    - name: Debug keys for prefix
+      debug: var=bar_keys
+      when: bar_keys is defined
+
     - name: Debug values
       debug: var=foo_key.value
 
