@@ -47,5 +47,11 @@
     - name: Delete unknown key
       consul_kv: action=delete key=what/nope/maybe/nah
 
+    - name: Delete with invalid check and set
+      consul_kv: action=delete key=bar/baz/foo cas=0
+
+    - name: Delete with valid check and set
+      consul_kv: action=delete key=bar/baz/foo cas=100
+
     - name: Put key into dc2
       consul_kv: action=put key=wat value="{\"some\":\"JSON\"}" dc="dc2" port=8510

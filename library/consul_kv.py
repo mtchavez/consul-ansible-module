@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# Copyright 2013 Chavez <chavez@somewhere-cool.com>
+# Copyright 2015 Chavez <chavez@somewhere-cool.com>
 #
 # This file is part of Ansible
 #
@@ -41,6 +41,10 @@ options:
       - The datacenter to use
     required: false
     default: dc1
+  cas:
+    description:
+      - Check and set parameter
+    require: false
   host:
     description:
       - Consul host
@@ -112,13 +116,14 @@ class ConsulKV(object):
         """Takes an AnsibleModule object to set up Consul K/V interaction"""
         self.module = module
         self.action = string.upper(module.params.get('action', ''))
+        self.cas = module.params.get('cas', None)
+        self.dc = module.params.get('dc', 'dc1')
+        self.host = module.params.get('host', '127.0.0.1')
         self.key = module.params.get('key', '')
         self.keys = module.params.get('keys', False)
-        self.value = module.params.get('value', '')
-        self.host = module.params.get('host', '127.0.0.1')
-        self.dc = module.params.get('dc', 'dc1')
         self.port = module.params.get('port', 8500)
         self.recurse = module.params.get('recurse', False)
+        self.value = module.params.get('value', '')
         self.version = module.params.get('version', 'v1')
         self._build_url()
 
@@ -160,7 +165,7 @@ class ConsulKV(object):
             self.module.fail_json(msg="API call failed: %s" % str(e))
 
         response_body = response.read()
-        self._handle_response(response_body)
+        self._handle_response(response, response_body)
 
     def _query_params(self):
         params = {}
@@ -168,6 +173,8 @@ class ConsulKV(object):
             params['dc'] = self.dc
         if self.action == self.DELETE and self.recurse:
             params['recurse'] = 'true'
+        if self.action in [self.DELETE, self.PUT] and self.cas:
+            params['cas'] = self.cas
         if self.action == self.GET and self.keys:
             params['keys'] = 'true'
         return params
@@ -184,9 +191,11 @@ class ConsulKV(object):
 
         return req
 
-    def _handle_response(self, response_body):
-        if self.action != self.GET and response_body == 'true':
+    def _handle_response(self, response, response_body):
+        if self.action == self.PUT and response_body == 'true':
             self.module.exit_json(changed=True, succeeded=True, key=self.key, value=self.value)
+        elif self.action == self.DELETE and response.getcode() == 200:
+            self.module.exit_json(changed=True, succeeded=True, key=self.key, deleted=True)
         elif self.action == self.GET:
             parsed_response = json.loads(response_body)
             # Decode values
@@ -197,7 +206,7 @@ class ConsulKV(object):
                     obj['Value'] = base64.decodestring(obj.get('Value', ''))
             self.module.exit_json(changed=True, succeeded=True, key=self.key, value=parsed_response)
         else:
-            self.module.fail_json(msg="Failed %s key: %s because %s" % (self.action, self.key, response_body))
+            self.module.fail_json(msg="Failed %s with a %i for key: %s because %s" % (self.action, response.getcode(), self.key, response_body))
 
 
 def main():
@@ -205,6 +214,7 @@ def main():
     module = AnsibleModule(
         argument_spec=dict(
             action=dict(required=True),
+            cas=dict(require=False, type='int'),
             dc=dict(required=False, default='dc1'),
             host=dict(required=False, default="127.0.0.1"),
             key=dict(required=True),
