@@ -31,6 +31,14 @@
       debug: var=bar_keys
       when: bar_keys is defined
 
+    - name: Get keys up to separator
+      consul_kv: action=get key=bar/ keys=true separator='/'
+      register: separator_keys
+
+    - name: Debug keys up to separator
+      debug: var=separator_keys
+      when: separator_keys is defined
+
     - name: Debug values
       debug: var=foo_key.value
 
