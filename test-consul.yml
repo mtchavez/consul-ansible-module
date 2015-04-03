@@ -13,7 +13,7 @@
       consul_kv: action=put key=foo value=bar
 
     - name: Set value for nested key
-      consul_kv: action=put key=foo/bar/baz value=inglebert
+      consul_kv: action=put key=bar/baz/foo value="{\"name\":\"inglebert\"}"
 
     - name: Get value
       consul_kv: action=get key=foo
@@ -29,6 +29,9 @@
     - name: Set key without value
       consul_kv: action=put key=foo
       ignore_errors: true
+
+    - name: Recursive delete of directory
+      consul_kv: action=delete key=bar recurse=true
 
     - name: Delete key
       consul_kv: action=delete key=foo

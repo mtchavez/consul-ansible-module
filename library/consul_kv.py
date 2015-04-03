@@ -54,7 +54,11 @@ options:
     description:
       - Consul API port
     required: true
-    default: 8500
+  recurse:
+    description:
+      - Recurse flag for DELETE or GET actions
+    required: false
+    default: False
   value:
     description:
       - Value to set when adding or updating a key
@@ -78,6 +82,9 @@ EXAMPLES = '''
 
 # DELETE a key
 - consul_kv: action=delete key=foo/tmp
+
+# DELETE a directory recursively
+- consul_kv: action=delete key=foo/bar recurse=true
 '''
 
 #
@@ -101,6 +108,7 @@ class ConsulKV(object):
         self.host = module.params.get('host', '127.0.0.1')
         self.dc = module.params.get('dc', 'dc1')
         self.port = module.params.get('port', 8500)
+        self.recurse = module.params.get('recurse', False)
         self.version = module.params.get('version', 'v1')
         self._build_url()
 
@@ -148,11 +156,14 @@ class ConsulKV(object):
         params = {}
         if self.dc != 'dc1':
             params['dc'] = self.dc
+        if self.action in [self.DELETE, self.GET] and self.recurse:
+            params['recurse'] = 'true'
         return params
 
     def _setup_request(self):
         params = urllib.urlencode(self._query_params())
-        self.api_url = self.api_url + '/?' + params
+        if params:
+            self.api_url = self.api_url + '?' + params
         req = urllib2.Request(url=self.api_url)
         if self.action == self.PUT:
             req = urllib2.Request(url=self.api_url, data=self.value)
@@ -183,6 +194,7 @@ def main():
             host=dict(required=False, default="127.0.0.1"),
             key=dict(required=True),
             port=dict(require=False, default=8500),
+            recurse=dict(require=False, default=False, type='bool'),
             value=dict(required=False),
             version=dict(required=False, default='v1'),
         ),
