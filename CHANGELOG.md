@@ -5,6 +5,7 @@
 * GET all keys for a given prefix
 * DELETE with check and set
 * GET keys up to separator
+* PUT flags param added
 
 # v0.0.1
 

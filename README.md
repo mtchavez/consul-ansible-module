@@ -13,14 +13,11 @@ Examples
 # PUT a value for a key
 - consul_kv: action=put key=foo value=bar
 
+# PUT value with flag
+- consul_kv: action=put key=bar/baz/bizzle value="shizzle" flags=23
+
 # GET a value for a key
 - consul_kv: action=get key=foo/bar/baz
-
-# DELETE a key
-- consul_kv: action=delete key=foo/tmp
-
-# DELETE a directory recursively
-- consul_kv: action=delete key=foo/bar recurse=true
 
 # GET keys for prefix
 - consul_kv: action=get key=bar keys=true
@@ -29,6 +26,12 @@ Examples
 # GET keys up to separator
 - consul_kv: action=get key=bar/ keys=true separator='/'
   register: separator_keys
+
+# DELETE a key
+- consul_kv: action=delete key=foo/tmp
+
+# DELETE a directory recursively
+- consul_kv: action=delete key=foo/bar recurse=true
 ```
 
 ## Documentation
@@ -53,6 +56,10 @@ options:
   cas:
     description:
       - Check and set parameter
+    require: false
+  flags:
+    description:
+      - Opaque flag to set as metadata for a key
     require: false
   host:
     description:
