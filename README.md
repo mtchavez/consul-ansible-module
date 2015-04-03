@@ -21,6 +21,10 @@ Examples
 
 # DELETE a directory recursively
 - consul_kv: action=delete key=foo/bar recurse=true
+
+# GET keys for prefix
+- consul_kv: action=get key=bar keys=true
+  register: bar_keys
 ```
 
 ## Documentation
@@ -51,6 +55,11 @@ options:
     description:
       - Key to interact with in K/V store
     required: true
+  keys:
+    description:
+      - Return keys on a GET request for a given path
+    required: false
+    default: False
   port:
     description:
       - Consul API port

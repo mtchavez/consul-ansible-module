@@ -50,6 +50,11 @@ options:
     description:
       - Key to interact with in K/V store
     required: true
+  keys:
+    description:
+      - Return keys on a GET request for a given path
+    required: false
+    default: False
   port:
     description:
       - Consul API port
@@ -85,6 +90,10 @@ EXAMPLES = '''
 
 # DELETE a directory recursively
 - consul_kv: action=delete key=foo/bar recurse=true
+
+# GET keys for prefix
+- consul_kv: action=get key=bar keys=true
+  register: bar_keys
 '''
 
 #
@@ -104,6 +113,7 @@ class ConsulKV(object):
         self.module = module
         self.action = string.upper(module.params.get('action', ''))
         self.key = module.params.get('key', '')
+        self.keys = module.params.get('keys', False)
         self.value = module.params.get('value', '')
         self.host = module.params.get('host', '127.0.0.1')
         self.dc = module.params.get('dc', 'dc1')
@@ -156,8 +166,10 @@ class ConsulKV(object):
         params = {}
         if self.dc != 'dc1':
             params['dc'] = self.dc
-        if self.action in [self.DELETE, self.GET] and self.recurse:
+        if self.action == self.DELETE and self.recurse:
             params['recurse'] = 'true'
+        if self.action == self.GET and self.keys:
+            params['keys'] = 'true'
         return params
 
     def _setup_request(self):
@@ -179,7 +191,10 @@ class ConsulKV(object):
             parsed_response = json.loads(response_body)
             # Decode values
             for obj in parsed_response:
-                obj['Value'] = base64.decodestring(obj.get('Value', ''))
+                # When doing a GET for only keys the objects will not
+                # be a dict with metadata but only a list of string key values
+                if isinstance(obj, dict):
+                    obj['Value'] = base64.decodestring(obj.get('Value', ''))
             self.module.exit_json(changed=True, succeeded=True, key=self.key, value=parsed_response)
         else:
             self.module.fail_json(msg="Failed %s key: %s because %s" % (self.action, self.key, response_body))
@@ -193,6 +208,7 @@ def main():
             dc=dict(required=False, default='dc1'),
             host=dict(required=False, default="127.0.0.1"),
             key=dict(required=True),
+            keys=dict(require=False, default=False, type='bool'),
             port=dict(require=False, default=8500),
             recurse=dict(require=False, default=False, type='bool'),
             value=dict(required=False),
