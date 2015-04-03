@@ -99,6 +99,15 @@ EXAMPLES = '''
 # PUT value with flag
 - consul_kv: action=put key=bar/baz/bizzle value="shizzle" flags=23
 
+# GET key for PUT with check and set
+- consul_kv: action=get key=bar/baz/bizzle
+  register: bizzle
+
+# PUT check and set
+- consul_kv: action=put key=bar/baz/bizzle value="no shizzle" cas={{item.ModifyIndex|int}}
+  with_items: bizzle.value
+
+  with_items: bizzle.value
 # GET a value for a key
 - consul_kv: action=get key=foo/bar/baz
 
