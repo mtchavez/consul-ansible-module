@@ -1,11 +1,17 @@
-# Consul K/V Ansible Module
+# Consul HTTP API Ansible Module
 
 [![Latest Version](http://img.shields.io/github/release/mtchavez/consul-ansible-module.svg?style=flat-square)](https://github.com/mtchavez/consul-ansible-module/releases)
 [![Build Status](https://travis-ci.org/mtchavez/consul-ansible-module.svg?branch=master)](https://travis-ci.org/mtchavez/consul-ansible-module)
 
-An Ansible module to interact with consul's k/v API from your playbooks and roles.
+An Ansible module to interact with consul's API from your playbooks and roles.
 
-## Usage
+## API Endpoints
+
+* [Key/Value](#key-value)
+
+### [Key/Value](#key-value)
+
+#### Usage
 
 Examples
 
@@ -42,7 +48,7 @@ Examples
 - consul_kv: action=delete key=foo/bar recurse=true
 ```
 
-## Documentation
+#### Documentation
 
 ```yaml
 module: consul_kv
@@ -120,7 +126,24 @@ Then you can run the test playbook with `ansible-playbook -i ./hosts test-consul
 
 ## TODO
 
-* Handle allowed URL params for API endpoints
-* Handle sessions
-  * Locking
-  * Releasing
+* Key value
+  * Session acquire/release on PUT
+* Implement session API
+  * destroy
+  * info
+  * node
+  * list
+  * renew
+* Implement ACL API
+  * create
+  * update
+  * destroy
+  * info
+  * clone
+  * list
+* Implement events API
+  * fire
+  * list
+* Iplement status API
+  * leader
+  * peers
