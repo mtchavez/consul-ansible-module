@@ -9,13 +9,16 @@
 
   tasks:
 
-    - name: Set value for key
+    - name: PUT value for key
       consul_kv: action=put key=foo value=bar
 
-    - name: Set value for nested key
+    - name: PUT value for nested key
       consul_kv: action=put key=bar/baz/foo value="{\"name\":\"inglebert\"}"
 
-    - name: Get value
+    - name: PUT value with flag
+      consul_kv: action=put key=bar/baz/bizzle value="shizzle" flags=23
+
+    - name: GET value
       consul_kv: action=get key=foo
       register: foo_key
 
@@ -23,7 +26,10 @@
       debug: var=foo_key
       when: foo_key is defined
 
-    - name: Get keys for prefix
+    - name: Debug values
+      debug: var=foo_key.value
+
+    - name: GET keys for prefix
       consul_kv: action=get key=bar keys=true
       register: bar_keys
 
@@ -31,7 +37,7 @@
       debug: var=bar_keys
       when: bar_keys is defined
 
-    - name: Get keys up to separator
+    - name: GET keys up to separator
       consul_kv: action=get key=bar/ keys=true separator='/'
       register: separator_keys
 
@@ -39,27 +45,27 @@
       debug: var=separator_keys
       when: separator_keys is defined
 
-    - name: Debug values
-      debug: var=foo_key.value
-
-    - name: Set key without value
+    - name: PUT key without value
       consul_kv: action=put key=foo
       ignore_errors: true
 
-    - name: Recursive delete of directory
-      consul_kv: action=delete key=bar recurse=true
+    - name: PUT value for recursive DELETE
+      consul_kv: action=put key=dir/to/remove/recursively value="shizzle" flags=23
 
-    - name: Delete key
+    - name: Recursive DELETE of directory
+      consul_kv: action=delete key=dir recurse=true
+
+    - name: DELETE key
       consul_kv: action=delete key=foo
 
-    - name: Delete unknown key
+    - name: DELETE unknown key
       consul_kv: action=delete key=what/nope/maybe/nah
 
-    - name: Delete with invalid check and set
+    - name: DELETE with invalid check and set
       consul_kv: action=delete key=bar/baz/foo cas=0
 
-    - name: Delete with valid check and set
+    - name: DELETE with valid check and set
       consul_kv: action=delete key=bar/baz/foo cas=100
 
-    - name: Put key into dc2
+    - name: PUT key into dc2
       consul_kv: action=put key=wat value="{\"some\":\"JSON\"}" dc="dc2" port=8510

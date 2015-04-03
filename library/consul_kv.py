@@ -47,6 +47,10 @@ options:
     description:
       - Check and set parameter
     require: false
+  flags:
+    description:
+      - Opaque flag to set as metadata for a key
+    require: false
   host:
     description:
       - Consul host
@@ -92,14 +96,11 @@ EXAMPLES = '''
 # PUT a value for a key
 - consul_kv: action=put key=foo value=bar
 
+# PUT value with flag
+- consul_kv: action=put key=bar/baz/bizzle value="shizzle" flags=23
+
 # GET a value for a key
 - consul_kv: action=get key=foo/bar/baz
-
-# DELETE a key
-- consul_kv: action=delete key=foo/tmp
-
-# DELETE a directory recursively
-- consul_kv: action=delete key=foo/bar recurse=true
 
 # GET keys for prefix
 - consul_kv: action=get key=bar keys=true
@@ -108,6 +109,12 @@ EXAMPLES = '''
 # GET keys up to separator
 - consul_kv: action=get key=bar/ keys=true separator='/'
   register: separator_keys
+
+# DELETE a key
+- consul_kv: action=delete key=foo/tmp
+
+# DELETE a directory recursively
+- consul_kv: action=delete key=foo/bar recurse=true
 '''
 
 #
@@ -128,6 +135,7 @@ class ConsulKV(object):
         self.action = string.upper(module.params.get('action', ''))
         self.cas = module.params.get('cas', None)
         self.dc = module.params.get('dc', 'dc1')
+        self.flags = module.params.get('flags', None)
         self.host = module.params.get('host', '127.0.0.1')
         self.key = module.params.get('key', '')
         self.keys = module.params.get('keys', False)
@@ -190,6 +198,8 @@ class ConsulKV(object):
             if self.separator:
                 params['separator'] = self.separator
             params['keys'] = 'true'
+        if self.action == self.PUT and self.flags:
+            params['flags'] = self.flags
         return params
 
     def _setup_request(self):
@@ -229,6 +239,7 @@ def main():
             action=dict(required=True),
             cas=dict(require=False, type='int'),
             dc=dict(required=False, default='dc1'),
+            flags=dict(require=False, type='int'),
             host=dict(required=False, default="127.0.0.1"),
             key=dict(required=True),
             keys=dict(require=False, default=False, type='bool'),
