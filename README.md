@@ -91,7 +91,7 @@ You will need to be running a consul server locally to run the test playbook.
 
 Run consul with
   * DC1: `consul agent --server --bootstrap-expect=1 --data-dir=ci/consul/dc1/ --log-level=debug`
-  * DC2: `consul agent --server=true --bootstrap-expect=1 --dc=dc2 --config-file=ci/consul/dc2/config.json --data-dir=ci/consul/dc2`
+  * DC2: `consul agent --server --bootstrap-expect=1 --config-file=ci/consul/dc2/config.json --data-dir=ci/consul/dc2 --log-level=debug`
 
 Then you can run the test playbook with `ansible-playbook -i ./hosts test-consul.yml`
 
