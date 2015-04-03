@@ -144,6 +144,6 @@ Then you can run the test playbook with `ansible-playbook -i ./hosts test-consul
 * Implement events API
   * fire
   * list
-* Iplement status API
+* Implement status API
   * leader
   * peers
