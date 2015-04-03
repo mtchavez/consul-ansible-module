@@ -7,9 +7,9 @@ An Ansible module to interact with consul's API from your playbooks and roles.
 
 ## API Endpoints
 
-* [Key/Value](#key-value)
+* [Key/Value](#keyvalue)
 
-### [Key/Value](#key-value)
+### [Key/Value](#keyvalue)
 
 #### Usage
 
