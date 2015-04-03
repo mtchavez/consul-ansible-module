@@ -18,6 +18,9 @@ Examples
 
 # DELETE a key
 - consul_kv: action=delete key=foo/tmp
+
+# DELETE a directory recursively
+- consul_kv: action=delete key=foo/bar recurse=true
 ```
 
 ## Documentation
@@ -53,6 +56,11 @@ options:
       - Consul API port
     required: true
     default: 8500
+  recurse:
+    description:
+      - Recurse flag for DELETE or GET actions
+    required: false
+    default: False
   value:
     description:
       - Value to set when adding or updating a key
