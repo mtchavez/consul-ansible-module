@@ -18,6 +18,18 @@
     - name: PUT value with flag
       consul_kv: action=put key=bar/baz/bizzle value="shizzle" flags=23
 
+    - name: PUT with check and set non matching index
+      consul_kv: action=put key=bar/baz/bizzle value="shizzle" cas=1
+      ignore_errors: true
+
+    - name: GET value
+      consul_kv: action=get key=bar/baz/bizzle
+      register: bizzle
+
+    - name: PUT with check and set matching index
+      consul_kv: action=put key=bar/baz/bizzle value="no shizzle" cas={{item.ModifyIndex|int}}
+      with_items: bizzle.value
+
     - name: GET value
       consul_kv: action=get key=foo
       register: foo_key
