@@ -42,6 +42,15 @@
       tags:
         - kv
 
+    - name: Create session for PUT
+      consul_session: action=create
+      register: kv_session
+
+    - name: PUT with session
+      consul_kv: action=put key=razzle/acquired value="true" acquire={{kv_session.value.ID}}
+      tags:
+        - kv
+
     - name: GET value
       consul_kv: action=get key=foo
       register: foo_key

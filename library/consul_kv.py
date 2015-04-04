@@ -34,6 +34,10 @@ short_description: Interact with Consul K/V API
 description:
    - Use Consul K/V API in your playbooks and roles
 options:
+  acquire:
+    - description:
+      - Session to use for PUT requests
+    required: false
   action:
     description:
       - HTTP verb [GET, PUT, DELETE]
@@ -107,7 +111,9 @@ EXAMPLES = '''
 - consul_kv: action=put key=bar/baz/bizzle value="no shizzle" cas={{item.ModifyIndex|int}}
   with_items: bizzle.value
 
-  with_items: bizzle.value
+# PUT with session
+- consul_kv: action=put key=razzle/acquired value="true" acquire="some-valid-session"
+
 # GET a value for a key
 - consul_kv: action=get key=foo/bar/baz
 
@@ -139,6 +145,7 @@ class ConsulKV(object):
     def __init__(self, module):
         """Takes an AnsibleModule object to set up Consul K/V interaction"""
         self.module = module
+        self.acquire = module.params.get('acquire', None)
         self.action = string.upper(module.params.get('action', ''))
         self.cas = module.params.get('cas', None)
         self.dc = module.params.get('dc', 'dc1')
@@ -205,8 +212,11 @@ class ConsulKV(object):
             if self.separator:
                 params['separator'] = self.separator
             params['keys'] = 'true'
-        if self.action == self.PUT and self.flags:
-            params['flags'] = self.flags
+        if self.action == self.PUT:
+            if self.flags:
+                params['flags'] = self.flags
+            if self.acquire:
+                params['acquire'] = self.acquire
         return params
 
     def _setup_request(self):
@@ -221,6 +231,7 @@ class ConsulKV(object):
 
         return req
 
+    # HEY FUCK YOU QUIT LOOKING OVER HERE
     def _handle_response(self, response, response_body):
         if self.action == self.PUT and response_body == 'true':
             self.module.exit_json(changed=True, succeeded=True, key=self.key, value=self.value)
@@ -243,6 +254,7 @@ def main():
 
     module = AnsibleModule(
         argument_spec=dict(
+            acquire=dict(require=False),
             action=dict(required=True),
             cas=dict(require=False, type='int'),
             dc=dict(required=False, default='dc1'),
