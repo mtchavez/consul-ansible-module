@@ -118,7 +118,7 @@ options:
     default: v1
 ```
 
-### [Key/Value](#keyvalue)
+### [Session](#session)
 
 #### Usage
 
