@@ -136,8 +136,6 @@ class ConsulKV(object):
     ALLOWED_ACTIONS = ['GET', 'PUT', 'DELETE']
     GET, PUT, DELETE = ALLOWED_ACTIONS
 
-    ALLOWED_PARAMS = ['dc']
-
     def __init__(self, module):
         """Takes an AnsibleModule object to set up Consul K/V interaction"""
         self.module = module
