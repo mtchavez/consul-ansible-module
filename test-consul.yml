@@ -1,7 +1,7 @@
 ---
 
 # Key/Value test playbook
-include: test-kv.yml
+- include: test-kv.yml
 
 # Session test playbook
-include: test-session.yml
+- include: test-session.yml
