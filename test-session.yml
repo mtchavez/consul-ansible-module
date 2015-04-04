@@ -1,0 +1,21 @@
+---
+
+- hosts: 127.0.0.1
+  connection: local
+  gather_facts: False
+  sudo: False
+  vars_files:
+    - group_vars/consul
+
+  tasks:
+
+    - name: Session create
+      consul_session: action=create
+      register: session
+      tags:
+        - session
+
+    - name: Debug created session
+      debug: var=session
+      tags:
+        - session
