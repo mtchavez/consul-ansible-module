@@ -1,14 +1,16 @@
 # Unreleased
 
-* Datacenter param added
-* Recurse DELETE of directory
-* GET all keys for a given prefix
-* DELETE with check and set
-* GET keys up to separator
-* PUT flags param added
+* kv: Datacenter param added
+* kv: Recurse DELETE of directory
+* kv: GET all keys for a given prefix
+* kv: DELETE with check and set
+* kv: GET keys up to separator
+* kv: PUT flags param added
+* kv: PUT check and set
+* session: Create
 
 # v0.0.1
 
-* GET value for key
-* PUT value for key
-* DELETE key
+* kv: GET value for key
+* kv: PUT value for key
+* kv: DELETE key
