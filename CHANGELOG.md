@@ -7,6 +7,7 @@
 * kv: GET keys up to separator
 * kv: PUT flags param added
 * kv: PUT check and set
+* kv: PUT with session acquire
 * session: Create
 
 # v0.0.1

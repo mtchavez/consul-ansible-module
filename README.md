@@ -31,6 +31,9 @@ Examples
 - consul_kv: action=put key=bar/baz/bizzle value="no shizzle" cas={{item.ModifyIndex|int}}
   with_items: bizzle.value
 
+# PUT with session
+- consul_kv: action=put key=razzle/acquired value="true" acquire="some-valid-session"
+
 # GET a value for a key
 - consul_kv: action=get key=foo/bar/baz
 
@@ -175,7 +178,8 @@ Then you can run the test playbook with `ansible-playbook -i ./hosts test-consul
   * [x] GET
   * [x] PUT
   * [x] DELETE
-  * [ ] Session acquire/release on PUT
+  * [x] Session acquire PUT
+  * [ ] Session release PUT
 * Implement session API
   * [x] create
   * [ ] destroy
