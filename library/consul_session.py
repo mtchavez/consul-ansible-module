@@ -35,7 +35,7 @@ description:
 options:
   action:
     description:
-      - HTTP verb [GET, PUT, DELETE]
+      - API session action [create, destroy, info, node, list, renew]
     required: true
   dc:
     desription:
@@ -62,7 +62,8 @@ requirements: [ urllib, urllib2 ]
 '''
 
 EXAMPLES = '''
-
+# Session create
+- consul_session: action=create
 '''
 
 #
