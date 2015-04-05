@@ -9,6 +9,15 @@
 
   tasks:
 
+    - name: DELETE all
+      consul_kv: action=delete key={{item}} recurse=true
+      with_items:
+        - foo
+        - bar
+        - razzle
+      tags:
+        - kv
+
     - name: PUT value for key
       consul_kv: action=put key=foo value=bar
       tags:
@@ -48,6 +57,11 @@
 
     - name: PUT with session
       consul_kv: action=put key=razzle/acquired value="true" acquire={{kv_session.value.ID}}
+      tags:
+        - kv
+
+    - name: PUT with session release
+      consul_kv: action=put key=razzle/acquired value="released" release={{kv_session.value.ID}}
       tags:
         - kv
 
