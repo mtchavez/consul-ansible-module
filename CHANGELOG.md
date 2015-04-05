@@ -1,4 +1,4 @@
-# Unreleased
+# v0.1.0
 
 * kv: Datacenter param added
 * kv: Recurse DELETE of directory
@@ -8,6 +8,7 @@
 * kv: PUT flags param added
 * kv: PUT check and set
 * kv: PUT with session acquire
+* kv: PUT with session release
 * session: Create
 
 # v0.0.1

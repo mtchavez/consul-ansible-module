@@ -34,6 +34,9 @@ Examples
 # PUT with session
 - consul_kv: action=put key=razzle/acquired value="true" acquire="some-valid-session"
 
+# PUT with session release
+- consul_kv: action=put key=razzle/acquired value="true" release="some-valid-session" "
+
 # GET a value for a key
 - consul_kv: action=get key=foo/bar/baz
 
@@ -62,7 +65,11 @@ short_description: Interact with Consul K/V API
 description:
    - Use Consul K/V API in your playbooks and roles
 options:
-  action:
+  acquire:
+    - description:
+      - Session to use for PUT requests
+    required: false
+
     description:
       - HTTP verb [GET, PUT, DELETE]
     required: true
@@ -103,6 +110,10 @@ options:
       - Recurse flag for DELETE or GET actions
     required: false
     default: False
+  release:
+    - description:
+      - Session to release for PUT requests
+    required: false
   separator:
     description:
       - Separator to use when listing keys for a GET
@@ -179,7 +190,7 @@ Then you can run the test playbook with `ansible-playbook -i ./hosts test-consul
   * [x] PUT
   * [x] DELETE
   * [x] Session acquire PUT
-  * [ ] Session release PUT
+  * [x] Session release PUT
 * Implement session API
   * [x] create
   * [ ] destroy
