@@ -78,6 +78,10 @@ options:
       - Recurse flag for DELETE or GET actions
     required: false
     default: False
+  release:
+    - description:
+      - Session to release for PUT requests
+    required: false
   separator:
     description:
       - Separator to use when listing keys for a GET
@@ -113,6 +117,9 @@ EXAMPLES = '''
 
 # PUT with session
 - consul_kv: action=put key=razzle/acquired value="true" acquire="some-valid-session"
+
+# PUT with session release
+- consul_kv: action=put key=razzle/acquired value="true" acquire="some-valid-session release="some-valid-session" "
 
 # GET a value for a key
 - consul_kv: action=get key=foo/bar/baz
@@ -155,6 +162,7 @@ class ConsulKV(object):
         self.keys = module.params.get('keys', False)
         self.port = module.params.get('port', 8500)
         self.recurse = module.params.get('recurse', False)
+        self.release = module.params.get('release', None)
         self.separator = module.params.get('separator', None)
         self.value = module.params.get('value', '')
         self.version = module.params.get('version', 'v1')
@@ -217,6 +225,8 @@ class ConsulKV(object):
                 params['flags'] = self.flags
             if self.acquire:
                 params['acquire'] = self.acquire
+            if self.release:
+                params['release'] = self.release
         return params
 
     def _setup_request(self):
@@ -231,7 +241,6 @@ class ConsulKV(object):
 
         return req
 
-    # HEY FUCK YOU QUIT LOOKING OVER HERE
     def _handle_response(self, response, response_body):
         if self.action == self.PUT and response_body == 'true':
             self.module.exit_json(changed=True, succeeded=True, key=self.key, value=self.value)
@@ -264,6 +273,7 @@ def main():
             keys=dict(require=False, default=False, type='bool'),
             port=dict(require=False, default=8500),
             recurse=dict(require=False, default=False, type='bool'),
+            release=dict(require=False),
             separator=dict(require=False),
             value=dict(required=False),
             version=dict(required=False, default='v1'),
