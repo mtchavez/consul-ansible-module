@@ -97,6 +97,9 @@ EXAMPLES = '''
 
 # Renew session
 - consul_session: action=renew session="some-valid-session"
+
+# List sessions
+- consul_session: action=list
 '''
 
 #
