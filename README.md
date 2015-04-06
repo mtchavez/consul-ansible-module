@@ -137,6 +137,9 @@ Examples
 ```yaml
 # Session create
 - consul_session: action=create
+
+# Session destroy
+- consul_session: action=destroy session="some-valid-session"
 ```
 
 #### Documentation
@@ -166,6 +169,10 @@ options:
     description:
       - Consul API port
     required: true
+  session:
+    description:
+      - Consul session to interact with
+    require: false
   version:
     description:
       - Consul API version

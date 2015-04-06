@@ -19,3 +19,6 @@
       debug: var=session
       tags:
         - session
+
+    - name: Destroy session
+      consul_session: action=destroy session={{session.value.ID}}
