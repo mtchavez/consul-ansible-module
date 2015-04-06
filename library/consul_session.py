@@ -78,6 +78,9 @@ EXAMPLES = '''
 
 # Get session info
 - consul_session: action=info session="some-valid-session"
+
+# Get session renew
+- consul_session: action=renew session="some-valid-session"
 '''
 
 #

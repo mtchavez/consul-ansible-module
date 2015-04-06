@@ -143,6 +143,9 @@ Examples
 
 # Get session info
 - consul_session: action=info session="some-valid-session"
+
+# Get session renew
+- consul_session: action=renew session="some-valid-session"
 ```
 
 #### Documentation
@@ -207,7 +210,7 @@ Then you can run the test playbook with `ansible-playbook -i ./hosts test-consul
   * [x] info
   * [ ] node
   * [ ] list
-  * [ ] renew
+  * [x] renew
 * Implement ACL API
   * [ ] create
   * [ ] update
