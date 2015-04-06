@@ -47,6 +47,10 @@ options:
       - Consul host
     required: true
     default: 127.0.0.1
+  lock_delay:
+    description:
+      - Time to delay the lock of the session
+    require: false
   port:
     description:
       - Consul API port
@@ -102,6 +106,7 @@ class ConsulSession(object):
         self.action = string.lower(module.params.get('action', ''))
         self.dc = module.params.get('dc', 'dc1')
         self.host = module.params.get('host', '127.0.0.1')
+        self.lock_delay = module.params.get('lock_delay', '15s')
         self.port = module.params.get('port', 8500)
         self.session = module.params.get('session', '')
         self.ttl = module.params.get('ttl', '15s')
@@ -218,6 +223,7 @@ def main():
             action=dict(required=True),
             dc=dict(required=False, default='dc1'),
             host=dict(required=False, default='127.0.0.1'),
+            lock_delay=dict(require=False, default='15s'),
             port=dict(require=False, default=8500),
             session=dict(require=False),
             ttl=dict(required=False, default='15s'),

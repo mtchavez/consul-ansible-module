@@ -20,6 +20,23 @@
       tags:
         - session
 
+    - name: Session create with all params
+      consul_session: action=create lock_delay="25s" ttl="25s"
+      register: session_params
+      tags:
+        - session
+
+    - name: Get session params info
+      consul_session: action=info session={{session_params.value.ID}}
+      register: session_params_info
+      tags:
+        - session
+
+    - name: Debug session params
+      debug: var=session_params_info
+      tags:
+        - session
+
     - name: Get session info
       consul_session: action=info session={{session.value.ID}}
       register: session_info
@@ -43,6 +60,9 @@
         - session
 
     - name: Destroy session
-      consul_session: action=destroy session={{session.value.ID}}
+      consul_session: action=destroy session={{item}}
+      with_items:
+        - "{{session.value.ID}}"
+        - "{{session_params.value.ID}}"
       tags:
         - session
