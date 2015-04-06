@@ -1,3 +1,7 @@
+# Unreleased
+
+* session: Destroy
+
 # v0.1.0
 
 * kv: Datacenter param added

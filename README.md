@@ -200,7 +200,7 @@ Then you can run the test playbook with `ansible-playbook -i ./hosts test-consul
   * [x] Session release PUT
 * Implement session API
   * [x] create
-  * [ ] destroy
+  * [x] destroy
   * [ ] info
   * [ ] node
   * [ ] list
