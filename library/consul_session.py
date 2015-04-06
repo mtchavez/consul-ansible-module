@@ -51,6 +51,10 @@ options:
     description:
       - Time to delay the lock of the session
     require: false
+  node:
+    description:
+      - Node name to set on create
+    required: false
   port:
     description:
       - Consul API port
@@ -107,6 +111,7 @@ class ConsulSession(object):
         self.dc = module.params.get('dc', 'dc1')
         self.host = module.params.get('host', '127.0.0.1')
         self.lock_delay = module.params.get('lock_delay', '15s')
+        self.node = module.params.get('node', '')
         self.port = module.params.get('port', 8500)
         self.session = module.params.get('session', '')
         self.ttl = module.params.get('ttl', '15s')
@@ -212,7 +217,6 @@ class ConsulSession(object):
                 parsed_response = json.loads(response_body)
             except:
                 parsed_response = ''
-
             self.module.exit_json(changed=True, succeeded=True, value=parsed_response)
 
 
@@ -224,6 +228,7 @@ def main():
             dc=dict(required=False, default='dc1'),
             host=dict(required=False, default='127.0.0.1'),
             lock_delay=dict(require=False, default='15s'),
+            node=dict(required=False),
             port=dict(require=False, default=8500),
             session=dict(require=False),
             ttl=dict(required=False, default='15s'),
