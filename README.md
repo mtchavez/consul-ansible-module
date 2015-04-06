@@ -164,6 +164,11 @@ options:
   behavior:
     description:
       - Controls when the session is invalidated [release, delete]
+    require: false
+  checks:
+    description:
+      - List of associated health checks comma separated "foo,bar,baz"
+    required: false
   dc:
     desription:
       - The datacenter to use

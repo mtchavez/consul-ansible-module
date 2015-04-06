@@ -40,6 +40,11 @@ options:
   behavior:
     description:
       - Controls when the session is invalidated [release, delete]
+    require: false
+  checks:
+    description:
+      - List of associated health checks comma separated "foo,bar,baz"
+    required: false
   dc:
     desription:
       - The datacenter to use
@@ -107,11 +112,14 @@ class ConsulSession(object):
     PUT_ACTIONS = [CREATE, DESTROY, RENEW]
     GET_ACTIONS = [INFO, NODE, LIST]
 
+    DEFAULT_CHECKS = ['serfHealth']
+
     def __init__(self, module):
         """Takes an AnsibleModule object to set up Consul Session interaction"""
         self.module = module
         self.action = string.lower(module.params.get('action', ''))
         self.behavior = module.params.get('behavior', 'release')
+        self.checks = module.params.get('checks', self.DEFAULT_CHECKS[0])
         self.dc = module.params.get('dc', 'dc1')
         self.host = module.params.get('host', '127.0.0.1')
         self.lock_delay = module.params.get('lock_delay', '15s')
@@ -121,6 +129,7 @@ class ConsulSession(object):
         self.ttl = module.params.get('ttl', '15s')
         self.version = module.params.get('version', 'v1')
         self.params = OrderedDict({})
+        self.checks = str(self.checks).split(',')
         self._build_url()
 
     def run_cmd(self):
@@ -185,6 +194,10 @@ class ConsulSession(object):
         for param, name in valid_params.iteritems():
             if hasattr(self, param) and getattr(self, param):
                 self.params[name] = getattr(self, param)
+        # Ensure the default checks exist
+        if self.DEFAULT_CHECKS[0] not in self.params['Checks']:
+            self.params['Checks'] += self.DEFAULT_CHECKS
+        self.params['Checks'] = filter(None, self.params['Checks'])
 
     def _setup_request(self):
         # Add dc param if not the default
@@ -230,6 +243,7 @@ def main():
         argument_spec=dict(
             action=dict(required=True),
             behavior=dict(required=False, default='release'),
+            checks=dict(required=False, default=ConsulSession.DEFAULT_CHECKS[0]),
             dc=dict(required=False, default='dc1'),
             host=dict(required=False, default='127.0.0.1'),
             lock_delay=dict(require=False, default='15s'),
