@@ -36,6 +36,7 @@
         action=create
         lock_delay="25s"
         node="{{item.Node}}"
+        behavior=delete
         ttl="25s"
       register: session_params
       with_items: session_info.value

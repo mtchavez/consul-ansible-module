@@ -161,6 +161,9 @@ options:
     description:
       - API session action [create, destroy, info, node, list, renew]
     required: true
+  behavior:
+    description:
+      - Controls when the session is invalidated [release, delete]
   dc:
     desription:
       - The datacenter to use
@@ -171,6 +174,14 @@ options:
       - Consul host
     required: true
     default: 127.0.0.1
+  lock_delay:
+    description:
+      - Time to delay the lock of the session
+    require: false
+  node:
+    description:
+      - Node name to set on create
+    required: false
   port:
     description:
       - Consul API port
@@ -179,6 +190,10 @@ options:
     description:
       - Consul session to interact with
     require: false
+  ttl:
+    description:
+      - Session TTL
+    required: false
   version:
     description:
       - Consul API version

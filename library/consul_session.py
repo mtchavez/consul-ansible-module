@@ -37,6 +37,9 @@ options:
     description:
       - API session action [create, destroy, info, node, list, renew]
     required: true
+  behavior:
+    description:
+      - Controls when the session is invalidated [release, delete]
   dc:
     desription:
       - The datacenter to use
@@ -108,6 +111,7 @@ class ConsulSession(object):
         """Takes an AnsibleModule object to set up Consul Session interaction"""
         self.module = module
         self.action = string.lower(module.params.get('action', ''))
+        self.behavior = module.params.get('behavior', 'release')
         self.dc = module.params.get('dc', 'dc1')
         self.host = module.params.get('host', '127.0.0.1')
         self.lock_delay = module.params.get('lock_delay', '15s')
@@ -225,6 +229,7 @@ def main():
     module = AnsibleModule(
         argument_spec=dict(
             action=dict(required=True),
+            behavior=dict(required=False, default='release'),
             dc=dict(required=False, default='dc1'),
             host=dict(required=False, default='127.0.0.1'),
             lock_delay=dict(require=False, default='15s'),
