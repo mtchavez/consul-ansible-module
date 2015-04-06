@@ -71,6 +71,9 @@ EXAMPLES = '''
 
 # Session destroy
 - consul_session: action=destroy session="some-valid-session"
+
+# Get session info
+- consul_session: action=info session="some-valid-session"
 '''
 
 #
@@ -123,7 +126,8 @@ class ConsulSession(object):
             module.fail_json(msg="Destroy requires a session")
 
     def _validate_info(self):
-        pass
+        if not self.session:
+            module.fail_json(msg="Info requires a session")
 
     def _validate_node(self):
         pass
@@ -160,7 +164,7 @@ class ConsulSession(object):
         # Add dc param if not the default
         if self.dc != 'dc1':
             self.api_url = self.api_url + '?dc=%s' % self.dc
-        # Add params for specified action
+        # Add params for CREATE
         # Will set self.params dictionary to be encoded
         if self.action == self.CREATE:
             self._add_create_params()

@@ -1,6 +1,7 @@
 # Unreleased
 
 * session: Destroy
+* session: Info
 
 # v0.1.0
 

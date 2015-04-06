@@ -140,6 +140,9 @@ Examples
 
 # Session destroy
 - consul_session: action=destroy session="some-valid-session"
+
+# Get session info
+- consul_session: action=info session="some-valid-session"
 ```
 
 #### Documentation
@@ -201,7 +204,7 @@ Then you can run the test playbook with `ansible-playbook -i ./hosts test-consul
 * Implement session API
   * [x] create
   * [x] destroy
-  * [ ] info
+  * [x] info
   * [ ] node
   * [ ] list
   * [ ] renew
