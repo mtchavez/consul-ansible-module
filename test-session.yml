@@ -20,5 +20,18 @@
       tags:
         - session
 
+    - name: Get session info
+      consul_session: action=info session={{session.value.ID}}
+      register: session_info
+      tags:
+        - session
+
+    - name: Debug session info
+      debug: var=session_info
+      tags:
+        - session
+
     - name: Destroy session
       consul_session: action=destroy session={{session.value.ID}}
+      tags:
+        - session
