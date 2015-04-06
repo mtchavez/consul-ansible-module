@@ -51,6 +51,10 @@ options:
     description:
       - Consul API port
     required: true
+  session:
+    description:
+      - Consul session to interact with
+    require: false
   version:
     description:
       - Consul API version
@@ -64,6 +68,9 @@ requirements: [ urllib, urllib2 ]
 EXAMPLES = '''
 # Session create
 - consul_session: action=create
+
+# Session destroy
+- consul_session: action=destroy session="some-valid-session"
 '''
 
 #
@@ -86,6 +93,7 @@ class ConsulSession(object):
         self.dc = module.params.get('dc', 'dc1')
         self.host = module.params.get('host', '127.0.0.1')
         self.port = module.params.get('port', 8500)
+        self.session = module.params.get('session', '')
         self.version = module.params.get('version', 'v1')
         self.params = OrderedDict({})
         self._build_url()
@@ -104,12 +112,15 @@ class ConsulSession(object):
 
     def _build_url(self):
         self.api_url = "http://%s:%s/%s/session/%s" % (self.host, self.port, self.version, self.action)
+        if self.action in [self.DESTROY, self.INFO, self.RENEW] and self.session:
+            self.api_url += '/%s' % self.session
 
     def _validate_create(self):
         pass
 
     def _validate_destroy(self):
-        pass
+        if not self.session:
+            module.fail_json(msg="Destroy requires a session")
 
     def _validate_info(self):
         pass
@@ -141,8 +152,8 @@ class ConsulSession(object):
             "behavior": "Behavior",
             "ttl": "TTL"
         }
-        for param, name in valid_params:
-            if getattr(self, param):
+        for param, name in valid_params.iteritems():
+            if hasattr(self, param) and getattr(self, param):
                 self.params[name] = getattr(self, param)
 
     def _setup_request(self):
@@ -151,7 +162,8 @@ class ConsulSession(object):
             self.api_url = self.api_url + '?dc=%s' % self.dc
         # Add params for specified action
         # Will set self.params dictionary to be encoded
-        getattr(self, "_add_%s_params" % self.action)
+        if self.action == self.CREATE:
+            self._add_create_params()
 
         req = urllib2.Request(url=self.api_url)
         if self.action in self.PUT_ACTIONS:
@@ -191,6 +203,7 @@ def main():
             dc=dict(required=False, default='dc1'),
             host=dict(required=False, default="127.0.0.1"),
             port=dict(require=False, default=8500),
+            session=dict(require=False),
             version=dict(required=False, default='v1'),
         ),
         supports_check_mode=True
