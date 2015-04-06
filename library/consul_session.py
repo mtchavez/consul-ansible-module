@@ -55,6 +55,10 @@ options:
     description:
       - Consul session to interact with
     require: false
+  ttl:
+    description:
+      - Session TTL
+    required: false
   version:
     description:
       - Consul API version
@@ -97,6 +101,7 @@ class ConsulSession(object):
         self.host = module.params.get('host', '127.0.0.1')
         self.port = module.params.get('port', 8500)
         self.session = module.params.get('session', '')
+        self.ttl = module.params.get('ttl', '15s')
         self.version = module.params.get('version', 'v1')
         self.params = OrderedDict({})
         self._build_url()
@@ -128,6 +133,10 @@ class ConsulSession(object):
     def _validate_info(self):
         if not self.session:
             module.fail_json(msg="Info requires a session")
+
+    def _validate_renew(self):
+        if not self.session:
+            module.fail_json(msg="Renew requires a session")
 
     def _validate_node(self):
         pass
@@ -173,7 +182,7 @@ class ConsulSession(object):
         if self.action in self.PUT_ACTIONS:
             args = {'url': self.api_url}
             if self.params:
-                args['data'] = json.dump(self.params)
+                args['data'] = json.dumps(self.params)
             req = urllib2.Request(**args)
 
         # Set correct HTTP method
@@ -205,9 +214,10 @@ def main():
         argument_spec=dict(
             action=dict(required=True),
             dc=dict(required=False, default='dc1'),
-            host=dict(required=False, default="127.0.0.1"),
+            host=dict(required=False, default='127.0.0.1'),
             port=dict(require=False, default=8500),
             session=dict(require=False),
+            ttl=dict(required=False, default='15s'),
             version=dict(required=False, default='v1'),
         ),
         supports_check_mode=True
