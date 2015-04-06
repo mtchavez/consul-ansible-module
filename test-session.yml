@@ -10,7 +10,7 @@
   tasks:
 
     - name: Session create
-      consul_session: action=create
+      consul_session: action=create ttl="15s"
       register: session
       tags:
         - session
@@ -28,6 +28,17 @@
 
     - name: Debug session info
       debug: var=session_info
+      tags:
+        - session
+
+    - name: Get session renew
+      consul_session: action=renew session={{session.value.ID}}
+      register: session_renew
+      tags:
+        - session
+
+    - name: Debug session renew
+      debug: var=session_renew
       tags:
         - session
 
