@@ -83,6 +83,18 @@
       tags:
         - session
 
+    - name: All sessions for a node
+      consul_session: action=node node="{{item.Node}}"
+      register: node_sessions
+      with_items: session_info.value
+      tags:
+        - session
+
+    - name: Debug node sessions
+      debug: var=node_sessions
+      tags:
+        - session
+
     - name: Destroy session
       consul_session: action=destroy session={{item}}
       with_items:
