@@ -104,6 +104,9 @@ EXAMPLES = '''
 # List sessions
 - consul_session: action=list
   register: all_sessions
+
+# All sessions for a node
+- consul_session: action=node node="node-foo"
 '''
 
 #
@@ -155,6 +158,8 @@ class ConsulSession(object):
         self.api_url = "http://%s:%s/%s/session/%s" % (self.host, self.port, self.version, self.action)
         if self.action in [self.DESTROY, self.INFO, self.RENEW] and self.session:
             self.api_url += '/%s' % self.session
+        if self.action == self.NODE:
+            self.api_url += '/%s' % self.node
 
     def _validate_create(self):
         pass

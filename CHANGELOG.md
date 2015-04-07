@@ -4,6 +4,7 @@
 * session: Info
 * session: Renew
 * session: List
+* session: Node sessions
 
 # v0.1.0
 

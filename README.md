@@ -150,6 +150,9 @@ Examples
 # List sessions
 - consul_session: action=list
   register: all_sessions
+
+# All sessions for a node
+- consul_session: action=node node="node-foo"
 ```
 
 #### Documentation
@@ -232,7 +235,7 @@ Then you can run the test playbook with `ansible-playbook -i ./hosts test-consul
   * [x] create
   * [x] destroy
   * [x] info
-  * [ ] node
+  * [x] node
   * [x] list
   * [x] renew
 * Implement ACL API
