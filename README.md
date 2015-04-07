@@ -233,7 +233,7 @@ Then you can run the test playbook with `ansible-playbook -i ./hosts test-consul
   * [x] destroy
   * [x] info
   * [ ] node
-  * [ ] list
+  * [x] list
   * [x] renew
 * Implement ACL API
   * [ ] create
