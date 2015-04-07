@@ -100,6 +100,10 @@ EXAMPLES = '''
 
 # List sessions
 - consul_session: action=list
+
+# List sessions
+- consul_session: action=list
+  register: all_sessions
 '''
 
 #

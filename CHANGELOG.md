@@ -3,6 +3,7 @@
 * session: Destroy
 * session: Info
 * session: Renew
+* session: List
 
 # v0.1.0
 
