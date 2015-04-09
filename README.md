@@ -9,6 +9,7 @@ An Ansible module to interact with consul's API from your playbooks and roles.
 
 * [Key/Value](#keyvalue)
 * [Session](#session)
+* [Status](#status)
 
 ### [Key/Value](#keyvalue)
 
@@ -213,6 +214,54 @@ options:
     default: v1
 ```
 
+### [Status](#status)
+
+#### Usage
+
+Examples
+
+```yaml
+# Get leader
+- consul_status: action=leader
+```
+
+#### Documentation
+```yaml
+module: consul_status
+version_added: "1.9"
+author: Chavez
+short_description: Interact with Consul Status API
+description:
+   - Use Consul Status API in your playbooks and roles
+options:
+  action:
+    description:
+      - One of [leader, peers]
+    required: true
+  dc:
+    desription:
+      - The datacenter to use
+    required: false
+    default: dc1
+  host:
+    description:
+      - Consul host
+    required: true
+    default: 127.0.0.1
+  port:
+    description:
+      - Consul API port
+    required: true
+  version:
+    description:
+      - Consul API version
+    required: true
+    default: v1
+
+# informational: requirements for nodes
+requirements: [ urllib, urllib2 ]
+```
+
 ## Testing
 
 You will need to be running a consul server locally to run the test playbook.
@@ -249,5 +298,5 @@ Then you can run the test playbook with `ansible-playbook -i ./hosts test-consul
   * [ ] fire
   * [ ] list
 * Implement status API
-  * [ ] leader
+  * [x] leader
   * [ ] peers

@@ -1,3 +1,7 @@
+# Unreleased
+
+* status: leader
+
 # v0.2.0
 
 * session: Destroy
