@@ -5,3 +5,6 @@
 
 # Session test playbook
 - include: test-session.yml
+
+# Status test playbook
+- include: test-status.yml
