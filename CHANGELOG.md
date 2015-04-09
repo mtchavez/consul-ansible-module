@@ -1,6 +1,7 @@
 # Unreleased
 
 * status: leader
+* status: peers
 
 # v0.2.0
 
