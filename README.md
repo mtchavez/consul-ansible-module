@@ -223,6 +223,9 @@ Examples
 ```yaml
 # Get leader
 - consul_status: action=leader
+
+# Get peers
+- consul_status: action=peers
 ```
 
 #### Documentation

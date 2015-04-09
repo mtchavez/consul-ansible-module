@@ -19,3 +19,14 @@
       debug: var=leader
       tags:
         - status
+
+    - name: Get peers
+      consul_status: action=peers
+      register: peers
+      tags:
+        - status
+
+    - name: Debug peers response
+      debug: var=peers
+      tags:
+        - status
