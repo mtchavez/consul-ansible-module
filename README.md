@@ -302,4 +302,4 @@ Then you can run the test playbook with `ansible-playbook -i ./hosts test-consul
   * [ ] list
 * Implement status API
   * [x] leader
-  * [ ] peers
+  * [x] peers
