@@ -21,8 +21,6 @@
 import json
 import string
 
-from collections import OrderedDict
-
 
 DOCUMENTATION = '''
 ---
