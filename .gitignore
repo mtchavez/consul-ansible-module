@@ -1,6 +1,7 @@
 # Consul artifacts
 raft
 serf
+bin/consul
 tmp
 checkpoint-signature
 dist

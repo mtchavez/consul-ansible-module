@@ -8,3 +8,6 @@
 
 # Status test playbook
 - include: test-status.yml
+
+# Event test playbook
+- include: test-event.yml

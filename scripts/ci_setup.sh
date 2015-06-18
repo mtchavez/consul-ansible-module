@@ -4,8 +4,9 @@
 #
 set -ev
 
+OS_NAME=`uname -s | awk '{print tolower($0)}'`
 CONSUL_VER=0.7.0
-CONSUL_DL_URL=https://releases.hashicorp.com/consul/${CONSUL_VER}/consul_${CONSUL_VER}_linux_amd64.zip
+CONSUL_DL_URL=https://releases.hashicorp.com/consul/${CONSUL_VER}/consul_${CONSUL_VER}_${OS_NAME}_amd64.zip
 
 curl -L $CONSUL_DL_URL > consul.zip
 unzip -o consul.zip -d $PWD/bin/

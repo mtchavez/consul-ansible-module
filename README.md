@@ -11,6 +11,68 @@ An Ansible module to interact with consul's API from your playbooks and roles.
 * [Session](#session)
 * [Status](#status)
 
+### [Events](#events)
+
+#### Usage
+
+Examples
+
+```yaml
+# Create new event
+- name: Event new
+  consul_event: action=fire name=deploy
+  register: new_event
+  tags:
+    - event
+
+# List all events
+- name: Event list
+  consul_event: action=list
+  register: all_events
+  tags:
+    - event
+```
+
+#### Documentation
+
+```yaml
+---
+module: consul_events
+version_added: "1.9"
+author: Chavez
+short_description: Interact with Consul Event API
+description:
+   - Use Consul Event API in your playbooks and roles
+options:
+  action:
+    description:
+      - One of [leader, peers]
+    required: true
+  dc:
+    desription:
+      - The datacenter to use
+    required: false
+    default: dc1
+  host:
+    description:
+      - Consul host
+    required: true
+    default: 127.0.0.1
+  name:
+    description:
+      - Name of event to fire
+    required: false
+  node:
+    description:
+      - Node query filter for event fire
+    required: false
+  port:
+    description:
+      - Consul API port
+    required: true
+  service:
+```
+
 ### [Key/Value](#keyvalue)
 
 #### Usage
@@ -262,7 +324,7 @@ options:
     default: v1
 
 # informational: requirements for nodes
-requirements: [ urllib, urllib2 ]
+requirements: [ ]
 ```
 
 ## Testing
@@ -298,8 +360,8 @@ Then you can run the test playbook with `ansible-playbook -i ./hosts test-consul
   * [ ] clone
   * [ ] list
 * Implement events API
-  * [ ] fire
-  * [ ] list
+  * [x] fire
+  * [x] list
 * Implement status API
   * [x] leader
   * [x] peers

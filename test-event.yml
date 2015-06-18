@@ -1,0 +1,34 @@
+---
+
+- hosts: 127.0.0.1
+  connection: local
+  gather_facts: False
+  sudo: False
+  vars_files:
+    - group_vars/consul
+
+  tasks:
+
+    - name: Event new
+      consul_event: action=fire name=deploy
+      register: new_event
+      tags:
+        - event
+
+    - name: Debug new event
+      debug: var=new_event
+      when: new_event is defined
+      tags:
+        - event
+
+    - name: Event new
+      consul_event: action=list
+      register: all_events
+      tags:
+        - event
+
+    - name: Debug all events
+      debug: var=all_events
+      when: all_events is defined
+      tags:
+        - event
