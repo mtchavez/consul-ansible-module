@@ -4,3 +4,9 @@ serf
 tmp
 checkpoint-signature
 dist
+*.retry
+bin/consul
+
+# Ansible module scripts
+bin/env-setup
+bin/test-module
