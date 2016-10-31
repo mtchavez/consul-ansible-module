@@ -82,7 +82,7 @@ options:
     default: v1
 
 # informational: requirements for nodes
-requirements: [ urllib, urllib2 ]
+requirements: []
 '''
 
 EXAMPLES = '''
@@ -139,6 +139,7 @@ class ConsulSession(object):
         self.ttl = module.params.get('ttl', '15s')
         self.version = module.params.get('version', 'v1')
         self.params = OrderedDict({})
+        self.req_data = ''
         self.checks = str(self.checks).split(',')
         self._build_url()
 
@@ -183,16 +184,18 @@ class ConsulSession(object):
         pass
 
     def _make_api_call(self):
-        req = self._setup_request()
+        self._setup_request()
 
         try:
-            opener = urllib2.build_opener(urllib2.HTTPHandler)
-            response = opener.open(req)
-        except urllib2.URLError, e:
-            self.module.fail_json(msg="API call (%s) failed: %s" % (self.api_url, str(e)))
+            (response, info) = fetch_url(module, self.api_url, data=self.req_data, method=self._http_verb_for_action())
+        except Exception, e:
+            self.module.fail_json(msg="API call ({}) failed: {}".format(self.api_url, str(e)))
 
-        response_body = response.read()
-        self._handle_response(response, response_body)
+        try:
+            response_body = response.read()
+            self._handle_response(response, response_body)
+        except AttributeError, e:
+            self.module.fail_json(msg="Parsing response failed: {}, info: {}".format(str(e), info))
 
     def _add_create_params(self):
         valid_params = {
@@ -220,17 +223,10 @@ class ConsulSession(object):
         if self.action == self.CREATE:
             self._add_create_params()
 
-        req = urllib2.Request(url=self.api_url)
         if self.action in self.PUT_ACTIONS:
-            args = {'url': self.api_url}
             if self.params:
-                args['data'] = json.dumps(self.params)
-            req = urllib2.Request(**args)
+                self.req_data = json.dumps(self.params)
 
-        # Set correct HTTP method
-        req.get_method = lambda: self._http_verb_for_action()
-
-        return req
 
     def _http_verb_for_action(self):
         if self.action in self.PUT_ACTIONS:
@@ -250,7 +246,7 @@ class ConsulSession(object):
 
 
 def main():
-
+    global module
     module = AnsibleModule(
         argument_spec=dict(
             action=dict(required=True),
@@ -280,4 +276,5 @@ def main():
 from ansible.module_utils.basic import *
 from ansible.module_utils.urls import *
 
-main()
+if __name__ == '__main__':
+    main()
