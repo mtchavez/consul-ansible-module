@@ -21,6 +21,7 @@
 import base64
 import json
 import string
+import urllib
 
 from collections import OrderedDict
 
@@ -97,7 +98,7 @@ options:
     default: v1
 
 # informational: requirements for nodes
-requirements: [ urllib, urllib2 ]
+requirements: [ urllib ]
 '''
 
 EXAMPLES = '''
@@ -197,16 +198,19 @@ class ConsulKV(object):
         pass
 
     def _make_api_call(self):
-        req = self._setup_request()
+        self._setup_request()
 
         try:
-            opener = urllib2.build_opener(urllib2.HTTPHandler)
-            response = opener.open(req)
+            (response, info) = fetch_url(module, self.api_url, data=self.value, method=self.action)
         except urllib2.URLError, e:
-            self.module.fail_json(msg="API call failed: %s" % str(e))
+            self.module.fail_json(msg="API call failed: {}, info: {}".format(str(e), info))
 
-        response_body = response.read()
-        self._handle_response(response, response_body)
+        try:
+            response_body = response.read()
+            self._handle_response(response, response_body)
+        except AttributeError, e:
+            self.module.fail_json(msg="Parsing response failed: {}".format(str(e), info))
+
 
     def _query_params(self):
         params = OrderedDict({})
@@ -233,13 +237,6 @@ class ConsulKV(object):
         params = urllib.urlencode(self._query_params())
         if params:
             self.api_url = self.api_url + '?' + params
-        req = urllib2.Request(url=self.api_url)
-        if self.action == self.PUT:
-            req = urllib2.Request(url=self.api_url, data=self.value)
-        if self.action != self.GET:
-            req.get_method = lambda: self.action
-
-        return req
 
     def _handle_response(self, response, response_body):
         if self.action == self.PUT and response_body == 'true':
@@ -260,7 +257,7 @@ class ConsulKV(object):
 
 
 def main():
-
+    global module
     module = AnsibleModule(
         argument_spec=dict(
             acquire=dict(require=False),
@@ -293,4 +290,5 @@ def main():
 from ansible.module_utils.basic import *
 from ansible.module_utils.urls import *
 
-main()
+if __name__ == '__main__':
+    main()
