@@ -4,8 +4,8 @@
 #
 set -ev
 
-CONSUL_VER=0.5.0
-CONSUL_DL_URL=https://dl.bintray.com/mitchellh/consul/${CONSUL_VER}_linux_amd64.zip
+CONSUL_VER=0.7.0
+CONSUL_DL_URL=https://releases.hashicorp.com/consul/${CONSUL_VER}/consul_${CONSUL_VER}_linux_amd64.zip
 
 curl -L $CONSUL_DL_URL > consul.zip
 unzip -o consul.zip -d $PWD/bin/
