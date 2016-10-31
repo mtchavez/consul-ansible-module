@@ -1,3 +1,9 @@
+# v0.4.0
+
+- Update existing modules (k/v, session, status) to ansible standards
+- event: fire
+- event: list
+
 # v0.3.0
 
 * status: leader
