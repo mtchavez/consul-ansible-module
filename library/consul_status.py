@@ -56,7 +56,7 @@ options:
     default: v1
 
 # informational: requirements for nodes
-requirements: [ urllib, urllib2 ]
+requirements: []
 '''
 
 EXAMPLES = '''
@@ -102,13 +102,12 @@ class ConsulStatus(object):
         self.api_url = "http://%s:%s/%s/status/%s" % (self.host, self.port, self.version, self.action)
 
     def _make_api_call(self):
-        req = self._setup_request()
+        self._setup_request()
 
         try:
-            opener = urllib2.build_opener(urllib2.HTTPHandler)
-            response = opener.open(req)
-        except urllib2.URLError, e:
-            self.module.fail_json(msg="API call (%s) failed: %s" % (self.api_url, str(e)))
+            (response, info) = fetch_url(module, self.api_url)
+        except Exception, e:
+            self.module.fail_json(msg="API call ({}) failed: {}".format(self.api_url, str(e)))
 
         response_body = response.read()
         self._handle_response(response, response_body)
@@ -117,8 +116,6 @@ class ConsulStatus(object):
         # Add dc param if not the default
         if self.dc != 'dc1':
             self.api_url = self.api_url + '?dc=%s' % self.dc
-
-        return urllib2.Request(url=self.api_url)
 
     def _handle_response(self, response, response_body):
         code = response.getcode()
@@ -133,7 +130,7 @@ class ConsulStatus(object):
 
 
 def main():
-
+    global module
     module = AnsibleModule(
         argument_spec=dict(
             action=dict(required=True),
@@ -157,4 +154,5 @@ def main():
 from ansible.module_utils.basic import *
 from ansible.module_utils.urls import *
 
-main()
+if __name__ == '__main__':
+    main()
