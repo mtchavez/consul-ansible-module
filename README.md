@@ -340,29 +340,68 @@ Then you can run the test playbook with `ansible-playbook -i ./hosts test-consul
 
 ## TODO
 
-* Key value
-  * [x] GET
-  * [x] PUT
-  * [x] DELETE
-  * [x] Session acquire PUT
-  * [x] Session release PUT
-* Implement session API
-  * [x] create
-  * [x] destroy
-  * [x] info
-  * [x] node
-  * [x] list
-  * [x] renew
-* Implement ACL API
-  * [ ] create
-  * [ ] update
-  * [ ] destroy
-  * [ ] info
-  * [ ] clone
-  * [ ] list
-* Implement events API
-  * [x] fire
-  * [x] list
-* Implement status API
-  * [x] leader
-  * [x] peers
+- ACL API
+  - [ ]  `/v1/acl/create`
+  - [ ]  `/v1/acl/update`
+  - [ ]  `/v1/acl/destroy/<id`
+  - [ ]  `/v1/acl/info/<id`
+  - [ ]  `/v1/acl/clone/<id`
+  - [ ]  `/v1/acl/list`
+  - [ ]  `/v1/acl/replication`
+- Agent API
+  - [ ] `/v1/agent/checks`
+  - [ ] `/v1/agent/services`
+  - [ ] `/v1/agent/members`
+  - [ ] `/v1/agent/self`
+  - [ ] `/v1/agent/maintenance`
+  - [ ] `/v1/agent/join/<address>`
+  - [ ] `/v1/agent/force-leave/<node>`
+  - [ ] `/v1/agent/check/register`
+  - [ ] `/v1/agent/check/deregister/<checkID>`
+  - [ ] `/v1/agent/check/pass/<checkID>`
+  - [ ] `/v1/agent/check/warn/<checkID>`
+  - [ ] `/v1/agent/check/fail/<checkID>`
+  - [ ] `/v1/agent/check/update/<checkID>`
+  - [ ] `/v1/agent/service/register`
+  - [ ] `/v1/agent/service/deregister/<serviceID>`
+  - [ ] `/v1/agent/service/maintenance/<serviceID>`
+- Catalog API
+  - [ ] `/v1/catalog/register`
+  - [ ] `/v1/catalog/deregister`
+  - [ ] `/v1/catalog/datacenters`
+  - [ ] `/v1/catalog/nodes`
+  - [ ] `/v1/catalog/services`
+  - [ ] `/v1/catalog/service/<service>`
+  - [ ] `/v1/catalog/node/<node>`
+- Coordinate API
+  - [ ] ` /v1/coordinate/datacenters`
+  - [ ] ` /v1/coordinate/nodes`
+- Events API
+  - [x] fire
+  - [x] list
+- Health Checks API
+  - [ ] `/v1/health/node/<node>`
+  - [ ] `/v1/health/checks/<service>`
+  - [ ] `/v1/health/service/<service>`
+  - [ ] `/v1/health/state/<state>`
+- Key/Value API
+  - [x] GET
+  - [x] PUT
+  - [x] DELETE
+  - [x] Session acquire PUT
+  - [x] Session release PUT
+- Prepared Queries API
+  - [ ] `/v1/query`
+  - [ ] `/v1/query/<query`
+  - [ ] `/v1/query/<query or name>/execute`
+  - [ ] `/v1/query/<query or name>/explain`
+- Session API
+  - [x] create
+  - [x] destroy
+  - [x] info
+  - [x] node
+  - [x] list
+  - [x] renew
+- Status API
+  - [x] leader
+  - [x] peers
