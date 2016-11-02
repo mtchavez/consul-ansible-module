@@ -34,7 +34,11 @@
         - kv
 
     - name: PUT with check and set non matching index
-      consul_kv: action=put key=bar/baz/bizzle value="shizzle" cas=1
+      consul_kv:
+        action: put
+        key: bar/baz/bizzle
+        value: shizzle
+        cas: 1
       ignore_errors: true
       tags:
         - kv
@@ -46,8 +50,12 @@
         - kv
 
     - name: PUT with check and set matching index
-      consul_kv: action=put key=bar/baz/bizzle value="no shizzle" cas={{item.ModifyIndex|int}}
-      with_items: bizzle.value
+      consul_kv:
+        action: put
+        key: bar/baz/bizzle
+        value: "no shizzle"
+        cas: "{{ item.ModifyIndex|int }}"
+      with_items: "{{ bizzle.value }}"
       tags:
         - kv
 

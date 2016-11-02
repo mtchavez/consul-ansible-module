@@ -40,7 +40,7 @@
         checks=""
         ttl="25s"
       register: session_params
-      with_items: session_info.value
+      with_items: "{{ session_info.value }}"
       tags:
         - session
 
@@ -52,7 +52,7 @@
     - name: Get session params info
       consul_session: action=info session={{item.value.ID}}
       register: session_params_info
-      with_items: session_params.results
+      with_items: "{{ session_params.results }}"
       tags:
         - session
 
@@ -86,7 +86,7 @@
     - name: All sessions for a node
       consul_session: action=node node="{{item.Node}}"
       register: node_sessions
-      with_items: session_info.value
+      with_items: "{{ session_info.value }}"
       tags:
         - session
 
