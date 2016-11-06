@@ -3,7 +3,7 @@
 - hosts: 127.0.0.1
   connection: local
   gather_facts: False
-  sudo: False
+  become_user: sudo
   vars_files:
     - group_vars/consul
 
