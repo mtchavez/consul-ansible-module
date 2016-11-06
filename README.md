@@ -19,19 +19,16 @@ An Ansible module to interact with consul's API from your playbooks and roles.
 Examples
 
 ```yaml
-# Create new event
 - name: Event new
-  consul_event: action=fire name=deploy
+  consul_event:
+    action: fire
+    name: deploy
   register: new_event
-  tags:
-    - event
 
-# List all events
-- name: Event list
-  consul_event: action=list
+- name: Event new
+  consul_event:
+    action: list
   register: all_events
-  tags:
-    - event
 ```
 
 #### Documentation
