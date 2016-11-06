@@ -81,42 +81,77 @@ options:
 Examples
 
 ```yaml
-# PUT a value for a key
-- consul_kv: action=put key=foo value=bar
+- name: PUT a value for a key
+  consul_kv:
+    action: put
+    key: foo
+    value: bar
 
-# PUT value with flag
-- consul_kv: action=put key=bar/baz/bizzle value="shizzle" flags=23
+- name: PUT value with flag
+  consul_kv:
+    action: put
+    key: bar/baz/bizzle
+    value: shizzle
+    flags: 23
 
-# GET key for PUT with check and set
-- consul_kv: action=get key=bar/baz/bizzle
+- name: GET key for PUT with check and set
+  consul_kv:
+    action: get
+    key: bar/baz/bizzle
   register: bizzle
 
-# PUT check and set
-- consul_kv: action=put key=bar/baz/bizzle value="no shizzle" cas={{item.ModifyIndex|int}}
+- name: PUT check and set
+  consul_kv:
+    action: put
+    key: bar/baz/bizzle
+    value: "no shizzle"
+    cas: "{{ item.ModifyIndex|int }}"
   with_items: bizzle.value
 
-# PUT with session
-- consul_kv: action=put key=razzle/acquired value="true" acquire="some-valid-session"
+- name: PUT with session
+  consul_kv:
+    action: put
+    key: razzle/acquired
+    value: true
+    acquire: "some-valid-session"
 
-# PUT with session release
-- consul_kv: action=put key=razzle/acquired value="true" release="some-valid-session" "
+- name: PUT with session release
+  consul_kv:
+    action: put
+    key: razzle/acquired
+    value: true
+    release: "some-valid-session"
 
-# GET a value for a key
-- consul_kv: action=get key=foo/bar/baz
+- name: GET a value for a key
+  consul_kv:
+    action: get
+    key: foo/bar/baz
 
-# GET keys for prefix
-- consul_kv: action=get key=bar keys=true
+- name: GET keys for prefix
+  consul_kv:
+    action: get
+    key: bar
+    keys: true
   register: bar_keys
 
-# GET keys up to separator
-- consul_kv: action=get key=bar/ keys=true separator='/'
+- name: GET keys up to separator
+  consul_kv:
+    action: get
+    key: bar/
+    keys: true
+    separator: "/"
   register: separator_keys
 
-# DELETE a key
-- consul_kv: action=delete key=foo/tmp
+- name: DELETE a key
+  consul_kv:
+    action: delete
+    key: foo/tmp
 
-# DELETE a directory recursively
-- consul_kv: action=delete key=foo/bar recurse=true
+- name: DELETE a directory recursively
+  consul_kv:
+    action: delete
+    key: foo/bar
+    recurse: true
 ```
 
 #### Documentation
@@ -343,9 +378,9 @@ Then you can run the test playbook with `ansible-playbook -i ./hosts test-consul
 - ACL API
   - [ ]  `/v1/acl/create`
   - [ ]  `/v1/acl/update`
-  - [ ]  `/v1/acl/destroy/<id`
-  - [ ]  `/v1/acl/info/<id`
-  - [ ]  `/v1/acl/clone/<id`
+  - [ ]  `/v1/acl/destroy/<id>`
+  - [ ]  `/v1/acl/info/<id>`
+  - [ ]  `/v1/acl/clone/<id>`
   - [ ]  `/v1/acl/list`
   - [ ]  `/v1/acl/replication`
 - Agent API

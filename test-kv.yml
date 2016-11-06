@@ -10,7 +10,10 @@
   tasks:
 
     - name: DELETE all
-      consul_kv: action=delete key={{item}} recurse=true
+      consul_kv:
+        action: delete
+        key: "{{ item }}"
+        recurse: true
       with_items:
         - foo
         - bar
@@ -19,17 +22,27 @@
         - kv
 
     - name: PUT value for key
-      consul_kv: action=put key=foo value=bar
+      consul_kv:
+        action: put
+        key: foo
+        value: bar
       tags:
         - kv
 
     - name: PUT value for nested key
-      consul_kv: action=put key=bar/baz/foo value="{\"name\":\"inglebert\"}"
+      consul_kv:
+        action: put
+        key: bar/baz/foo
+        value: "{\"name\":\"inglebert\"}"
       tags:
         - kv
 
     - name: PUT value with flag
-      consul_kv: action=put key=bar/baz/bizzle value="shizzle" flags=23
+      consul_kv:
+        action: put
+        key: bar/baz/bizzle
+        value: shizzle
+        flags: 23
       tags:
         - kv
 
@@ -44,7 +57,9 @@
         - kv
 
     - name: GET value
-      consul_kv: action=get key=bar/baz/bizzle
+      consul_kv:
+        action: get
+        key: bar/baz/bizzle
       register: bizzle
       tags:
         - kv
@@ -60,97 +75,144 @@
         - kv
 
     - name: Create session for PUT
-      consul_session: action=create
+      consul_session:
+        action: create
       register: kv_session
 
     - name: PUT with session
-      consul_kv: action=put key=razzle/acquired value="true" acquire={{kv_session.value.ID}}
+      consul_kv:
+        action: put
+        key: razzle/acquired
+        value: true
+        acquire: "{{ kv_session.value.ID }}"
       tags:
         - kv
 
     - name: PUT with session release
-      consul_kv: action=put key=razzle/acquired value="released" release={{kv_session.value.ID}}
+      consul_kv:
+        action: put
+        key: razzle/acquired
+        value: released
+        release: "{{ kv_session.value.ID }}"
       tags:
         - kv
 
     - name: GET value
-      consul_kv: action=get key=foo
+      consul_kv:
+        action: get
+        key: foo
       register: foo_key
       tags:
         - kv
 
     - name: Debug gotten value
-      debug: var=foo_key
+      debug:
+        var: foo_key
       when: foo_key is defined
       tags:
         - kv
 
     - name: Debug values
-      debug: var=foo_key.value
+      debug:
+        var: foo_key.value
+      when: foo_key is defined
       tags:
         - kv
 
     - name: GET keys for prefix
-      consul_kv: action=get key=bar keys=true
+      consul_kv:
+        action: get
+        key: bar
+        keys: true
       register: bar_keys
       tags:
         - kv
 
     - name: Debug keys for prefix
-      debug: var=bar_keys
+      debug:
+        var: bar_keys
       when: bar_keys is defined
       tags:
         - kv
 
     - name: GET keys up to separator
-      consul_kv: action=get key=bar/ keys=true separator='/'
+      consul_kv:
+        action: get
+        key: bar/
+        keys: true
+        separator: "/"
       register: separator_keys
       tags:
         - kv
 
     - name: Debug keys up to separator
-      debug: var=separator_keys
+      debug:
+        var: separator_keys
       when: separator_keys is defined
       tags:
         - kv
 
     - name: PUT key without value
-      consul_kv: action=put key=foo
+      consul_kv:
+        action: put
+        key: foo
       ignore_errors: true
       tags:
         - kv
 
     - name: PUT value for recursive DELETE
-      consul_kv: action=put key=dir/to/remove/recursively value="shizzle" flags=23
+      consul_kv:
+        action: put
+        key: dir/to/remove/recursively
+        value: shizzle
+        flags: 23
       tags:
         - kv
 
     - name: Recursive DELETE of directory
-      consul_kv: action=delete key=dir recurse=true
+      consul_kv:
+        action: delete
+        key: dir
+        recurse: true
       tags:
         - kv
 
     - name: DELETE key
-      consul_kv: action=delete key=foo
+      consul_kv:
+        action: delete
+        key: foo
       tags:
         - kv
 
     - name: DELETE unknown key
-      consul_kv: action=delete key=what/nope/maybe/nah
+      consul_kv:
+        action: delete
+        key: what/nope/maybe/nah
       tags:
         - kv
 
     - name: DELETE with invalid check and set
-      consul_kv: action=delete key=bar/baz/foo cas=0
+      consul_kv:
+        action: delete
+        key: bar/baz/foo
+        cas: 0
       tags:
         - kv
 
     - name: DELETE with valid check and set
-      consul_kv: action=delete key=bar/baz/foo cas=100
+      consul_kv:
+        action: delete
+        key: bar/baz/foo
+        cas: 100
       tags:
         - kv
 
     - name: PUT key into dc2
-      consul_kv: action=put key=wat value="{\"some\":\"JSON\"}" dc="dc2" port=8510
+      consul_kv:
+        action: put
+        key: wat
+        value: "{\"some\":\"JSON\"}"
+        dc: dc2
+        port: 8510
       tags:
         - kv
