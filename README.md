@@ -356,11 +356,15 @@ options:
 Examples
 
 ```yaml
-# Get leader
-- consul_status: action=leader
+- name: Get leader
+  consul_status:
+    action: leader
+  register: leader
 
-# Get peers
-- consul_status: action=peers
+- name: Get peers
+  consul_status:
+    action: peers
+  register: peers
 ```
 
 #### Documentation

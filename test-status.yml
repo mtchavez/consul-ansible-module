@@ -10,23 +10,27 @@
   tasks:
 
     - name: Get leader
-      consul_status: action=leader
+      consul_status:
+        action: leader
       register: leader
       tags:
         - status
 
     - name: Debug leader response
-      debug: var=leader
+      debug:
+        var: leader
       tags:
         - status
 
     - name: Get peers
-      consul_status: action=peers
+      consul_status:
+        action: peers
       register: peers
       tags:
         - status
 
     - name: Debug peers response
-      debug: var=peers
+      debug:
+        var: peers
       tags:
         - status
