@@ -10,35 +10,41 @@
   tasks:
 
     - name: Session create
-      consul_session: action=create ttl="15s"
+      consul_session:
+        action: create
+        ttl: 15s
       register: session
       tags:
         - session
 
     - name: Debug created session
-      debug: var=session
+      debug:
+        var: session
       tags:
         - session
 
     - name: Get session info
-      consul_session: action=info session={{session.value.ID}}
+      consul_session:
+        action: info
+        session: "{{ session.value.ID }}"
       register: session_info
       tags:
         - session
 
     - name: Debug session info
-      debug: var=session_info
+      debug:
+        var: session_info
       tags:
         - session
 
     - name: Session create with all params
       consul_session:
-        action=create
-        lock_delay="25s"
-        node="{{item.Node}}"
-        behavior=delete
-        checks=""
-        ttl="25s"
+        action: create
+        lock_delay: 25s
+        node: "{{ item.Node }}"
+        behavior: delete
+        checks: ""
+        ttl: 25s
       register: session_params
       with_items: "{{ session_info.value }}"
       tags:
@@ -50,55 +56,68 @@
         - session
 
     - name: Get session params info
-      consul_session: action=info session={{item.value.ID}}
+      consul_session:
+        action: info
+        session: "{{ item.value.ID }}"
       register: session_params_info
       with_items: "{{ session_params.results }}"
       tags:
         - session
 
     - name: Debug session params
-      debug: var=session_params_info
+      debug:
+        var: session_params_info
       tags:
         - session
 
     - name: Get session renew
-      consul_session: action=renew session={{session.value.ID}}
+      consul_session:
+        action: renew
+        session: "{{ session.value.ID }}"
       register: session_renew
       tags:
         - session
 
     - name: Debug session renew
-      debug: var=session_renew
+      debug:
+        var: session_renew
       tags:
         - session
 
     - name: List sessions
-      consul_session: action=list
+      consul_session:
+        action: list
       register: all_sessions
       tags:
         - session
 
     - name: Debug all sessions
-      debug: var=all_sessions
+      debug:
+        var: all_sessions
       tags:
         - session
 
     - name: All sessions for a node
-      consul_session: action=node node="{{item.Node}}"
+      consul_session:
+        action: node
+        node: "{{ item.Node }}"
       register: node_sessions
       with_items: "{{ session_info.value }}"
       tags:
         - session
 
     - name: Debug node sessions
-      debug: var=node_sessions
+      debug:
+        var: node_sessions
       tags:
         - session
 
     - name: Destroy session
-      consul_session: action=destroy session={{item}}
+      consul_session:
+        action: destroy
+        session: "{{ item }}"
       with_items:
-        - "{{session.value.ID}}"
-        - "{{session_params.results[0].value.ID}}"
+        - "{{ session.value.ID }}"
+        - "{{ session_params.results[0].value.ID }}"
       tags:
         - session

@@ -234,24 +234,61 @@ options:
 
 Examples
 ```yaml
-# Session create
-- consul_session: action=create
+- name: Session create
+  consul_session:
+    action: create
+    ttl: 15s
+  register: session
 
-# Session destroy
-- consul_session: action=destroy session="some-valid-session"
+- name: Get session info
+  consul_session:
+    action: info
+    session: "{{ session.value.ID }}"
+  register: session_info
 
-# Get session info
-- consul_session: action=info session="some-valid-session"
+- name: Session create with all params
+  consul_session:
+    action: create
+    lock_delay: 25s
+    node: "{{ item.Node }}"
+    behavior: delete
+    checks: ""
+    ttl: 25s
+  register: session_params
+  with_items: "{{ session_info.value }}"
 
-# Renew session
-- consul_session: action=renew session="some-valid-session"
+- name: Get session params info
+  consul_session:
+    action: info
+    session: "{{ item.value.ID }}"
+  register: session_params_info
+  with_items: "{{ session_params.results }}"
 
-# List sessions
-- consul_session: action=list
+- name: Get session renew
+  consul_session:
+    action: renew
+    session: "{{ session.value.ID }}"
+  register: session_renew
+
+- name: List sessions
+  consul_session:
+    action: list
   register: all_sessions
 
-# All sessions for a node
-- consul_session: action=node node="node-foo"
+- name: All sessions for a node
+  consul_session:
+    action: node
+    node: "{{ item.Node }}"
+  register: node_sessions
+  with_items: "{{ session_info.value }}"
+
+- name: Destroy session
+  consul_session:
+    action: destroy
+    session: "{{ item }}"
+  with_items:
+    - "{{ session.value.ID }}"
+    - "{{ session_params.results[0].value.ID }}"
 ```
 
 #### Documentation
