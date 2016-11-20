@@ -1,0 +1,25 @@
+---
+
+- hosts: 127.0.0.1
+  connection: local
+  gather_facts: False
+  become_user: sudo
+  vars_files:
+    - group_vars/consul
+
+  tasks:
+
+    - name: Create ACL with defaults
+      consul_acl:
+        action: create
+        token: "{{ consul_acl_master_token }}"
+      register: new_acl_defaults
+      tags:
+        - acl
+
+    - name: Debug new acl with defaults
+      debug:
+        var: new_acl_defaults
+      when: new_acl_defaults is defined
+      tags:
+        - new_acl_defaults

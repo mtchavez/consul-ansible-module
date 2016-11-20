@@ -7,10 +7,75 @@ An Ansible module to interact with consul's API from your playbooks and roles.
 
 ## API Endpoints
 
+* [ACL](#acl)
 * [Events](#events)
 * [Key/Value](#keyvalue)
 * [Session](#session)
 * [Status](#status)
+
+### [ACL](#acl)
+
+#### Usage
+
+```yaml
+- name: Create ACL with defaults
+  consul_acl:
+    action: create
+    token: "master-token"
+```
+
+#### Documentation
+
+```yaml
+---
+module: consul_acl
+version_added: "1.9"
+author: Chavez
+short_description: Interact with Consul ACL API
+description:
+   - Use Consul ACL API in your playbooks and roles
+options:
+  acl_type:
+    description:
+      - Type of ACL
+    required: false
+  action:
+    description:
+      - One of [create]
+    required: true
+  dc:
+    desription:
+      - The datacenter to use
+    required: false
+    default: dc1
+  host:
+    description:
+      - Consul host
+    required: true
+    default: 127.0.0.1
+  name:
+    description:
+      - Name of event to fire
+    required: false
+  port:
+    description:
+      - Consul API port
+    required: true
+  rules:
+    description:
+      - ACL rules to set or update
+    required: false
+  token:
+    description:
+      - ACL token to use with requests
+    required: false
+  version:
+    description:
+      - Consul API version
+    required: true
+    default: v1
+```
+
 
 ### [Events](#events)
 
