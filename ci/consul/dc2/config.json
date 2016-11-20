@@ -2,6 +2,8 @@
   "datacenter": "dc2",
   "node_name": "dc2.local",
   "server": true,
+  "acl_datacenter": "dc2",
+  "acl_master_token": "master-token",
   "ports": {
       "dns": 8610,
       "http": 8510,

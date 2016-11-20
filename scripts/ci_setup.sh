@@ -15,7 +15,7 @@ chmod +x $PWD/bin/consul
 export PATH=$PATH:$PWD/bin
 
 # DC1
-consul agent --server=true --bootstrap-expect=1 --data-dir=$PWD/ci/consul/dc1 &
+consul agent --server=true --bootstrap-expect=1 --data-dir=$PWD/ci/consul/dc1 --config-file=$PWD/ci/consul/dc1/config.json &
 
 sleep 5
 

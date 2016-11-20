@@ -29,6 +29,7 @@ Examples
   consul_event:
     action: list
   register: all_events
+
 ```
 
 #### Documentation
@@ -406,7 +407,7 @@ requirements: [ ]
 You will need to be running a consul server locally to run the test playbook.
 
 Run consul with
-  * DC1: `consul agent --server --bootstrap-expect=1 --data-dir=ci/consul/dc1/ --log-level=debug`
+  * DC1: `consul agent --server --bootstrap-expect=1 --data-dir=ci/consul/dc1/ --log-level=debug --config-file=ci/consul/dc1/config.json`
   * DC2: `consul agent --server --bootstrap-expect=1 --config-file=ci/consul/dc2/config.json --data-dir=ci/consul/dc2 --log-level=debug`
 
 Then you can run the test playbook with `ansible-playbook -i ./hosts test-consul.yml`

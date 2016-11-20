@@ -11,3 +11,6 @@
 
 # Event test playbook
 - include: test-event.yml
+
+# Event test playbook
+- include: test-acl.yml
