@@ -87,6 +87,9 @@ options:
     description:
       - Separator to use when listing keys for a GET
     required: false
+  token:
+    description:
+      - ACL token to use with requests
   value:
     description:
       - Value to set when adding or updating a key
@@ -165,6 +168,7 @@ class ConsulKV(object):
         self.recurse = module.params.get('recurse', False)
         self.release = module.params.get('release', None)
         self.separator = module.params.get('separator', None)
+        self.token = module.params.get('token', None)
         self.value = module.params.get('value', '')
         self.version = module.params.get('version', 'v1')
         self._build_url()
@@ -216,6 +220,8 @@ class ConsulKV(object):
         params = OrderedDict({})
         if self.dc != 'dc1':
             params['dc'] = self.dc
+        if self.token:
+            params['token'] = self.token
         if self.action == self.DELETE and self.recurse:
             params['recurse'] = 'true'
         if self.action in [self.DELETE, self.PUT] and self.cas:
@@ -272,6 +278,7 @@ def main():
             recurse=dict(require=False, default=False, type='bool'),
             release=dict(require=False),
             separator=dict(require=False),
+            token=dict(required=False, default=None),
             value=dict(required=False),
             version=dict(required=False, default='v1'),
         ),
