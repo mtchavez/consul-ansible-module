@@ -17,10 +17,10 @@ export PATH=$PATH:$PWD/bin
 # DC1
 consul agent --server=true --bootstrap-expect=1 --data-dir=$PWD/ci/consul/dc1 --config-file=$PWD/ci/consul/dc1/config.json &
 
-sleep 5
+sleep 25
 
 consul agent --server=true --bootstrap-expect=1 --data-dir=$PWD/ci/consul/dc2 --config-file=$PWD/ci/consul/dc2/config.json &
 
-sleep 5
+sleep 25
 
 # vim: ft=sh:
