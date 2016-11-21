@@ -480,7 +480,7 @@ Then you can run the test playbook with `ansible-playbook -i ./hosts test-consul
 ## TODO
 
 - ACL API
-  - [ ]  `/v1/acl/create`
+  - [x]  `/v1/acl/create`
   - [ ]  `/v1/acl/update`
   - [ ]  `/v1/acl/destroy/<id>`
   - [ ]  `/v1/acl/info/<id>`
