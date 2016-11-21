@@ -20,6 +20,7 @@
 
 import json
 import string
+import urllib
 
 from collections import OrderedDict
 
@@ -71,6 +72,9 @@ options:
     description:
       - Consul session to interact with
     require: false
+  token:
+    description:
+      - ACL token to use with requests
   ttl:
     description:
       - Session TTL
@@ -136,6 +140,7 @@ class ConsulSession(object):
         self.node = module.params.get('node', '')
         self.port = module.params.get('port', 8500)
         self.session = module.params.get('session', '')
+        self.token = module.params.get('token', '')
         self.ttl = module.params.get('ttl', '15s')
         self.version = module.params.get('version', 'v1')
         self.params = OrderedDict({})
@@ -215,9 +220,9 @@ class ConsulSession(object):
         self.params['Checks'] = filter(None, self.params['Checks'])
 
     def _setup_request(self):
-        # Add dc param if not the default
-        if self.dc != 'dc1':
-            self.api_url = self.api_url + '?dc=%s' % self.dc
+        params = urllib.urlencode(self._query_params())
+        if params:
+            self.api_url = self.api_url + '?' + params
         # Add params for CREATE
         # Will set self.params dictionary to be encoded
         if self.action == self.CREATE:
@@ -227,6 +232,13 @@ class ConsulSession(object):
             if self.params:
                 self.req_data = json.dumps(self.params)
 
+    def _query_params(self):
+        params = OrderedDict({})
+        if self.dc != 'dc1':
+            params['dc'] = self.dc
+        if self.token:
+            params['token'] = self.token
+        return params
 
     def _http_verb_for_action(self):
         if self.action in self.PUT_ACTIONS:
@@ -258,6 +270,7 @@ def main():
             node=dict(required=False),
             port=dict(require=False, default=8500),
             session=dict(require=False),
+            token=dict(required=False, default=None),
             ttl=dict(required=False, default='15s'),
             version=dict(required=False, default='v1'),
         ),
