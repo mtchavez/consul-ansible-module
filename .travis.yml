@@ -7,3 +7,7 @@ install:
   - "make ci"
 before_script:
 script: ansible-playbook test-consul.yml
+after_failure:
+  - "killall consul"
+after_success:
+  - "killall consul"
