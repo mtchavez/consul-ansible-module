@@ -78,12 +78,14 @@
       consul_session:
         action: create
       register: kv_session
+      tags:
+        - kv
 
     - name: PUT with session
       consul_kv:
         action: put
         key: razzle/acquired
-        value: true
+        value: "true"
         acquire: "{{ kv_session.value.ID }}"
       tags:
         - kv
