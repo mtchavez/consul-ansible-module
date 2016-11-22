@@ -23,6 +23,13 @@ An Ansible module to interact with consul's API from your playbooks and roles.
     action: create
     token: "master-token"
 
+- name: Update ACL
+  consul_acl:
+    action: update
+    acl_id: "existing-acl-id"
+    name: "updated-acl-name"
+    token: "master-token"
+
 - name: List ACL
   consul_acl:
     action: list
@@ -486,7 +493,7 @@ Then you can run the test playbook with `ansible-playbook -i ./hosts test-consul
 
 - ACL API
   - [x]  `/v1/acl/create`
-  - [ ]  `/v1/acl/update`
+  - [x]  `/v1/acl/update`
   - [ ]  `/v1/acl/destroy/<id>`
   - [ ]  `/v1/acl/info/<id>`
   - [ ]  `/v1/acl/clone/<id>`
