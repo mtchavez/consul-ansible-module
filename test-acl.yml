@@ -53,3 +53,17 @@
       when: updated_acl.value.ID != new_acl_defaults.value.ID
       tags:
         - acl
+
+    - name: List ACL with master token
+      consul_acl:
+        action: list
+        token: "{{ consul_acl_master_token }}"
+      register: acl_list
+      tags:
+        - acl
+
+    - name: Validate ACL list
+      fail:
+        msg: "ACL list should have items"
+      when: acl_list|length == 0
+
