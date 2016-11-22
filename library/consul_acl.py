@@ -91,15 +91,16 @@ EXAMPLES = '''
 
 class ConsulACL(object):
 
-    ALLOWED_ACTIONS = ['create', '']
-    CREATE, _ = ALLOWED_ACTIONS
+    ALLOWED_ACTIONS = ['create', 'update']
+    CREATE, UPDATE = ALLOWED_ACTIONS
 
-    PUT_ACTIONS = [CREATE]
+    PUT_ACTIONS = [CREATE, UPDATE]
     GET_ACTIONS = []
 
     def __init__(self, module):
         """Takes an AnsibleModule object to set up Consul Event interaction"""
         self.module = module
+        self.acl_id = module.params.get('acl_id', None)
         self.action = string.lower(module.params.get('action', ''))
         self.dc = module.params.get('dc', 'dc1')
         self.host = module.params.get('host', '127.0.0.1')
@@ -132,6 +133,11 @@ class ConsulACL(object):
             return 'PUT'
         return 'GET'
 
+    def _validate_update(self):
+        if not self.acl_id:
+            self.module.fail_json(msg='An ACL ID is required when updating an ACL')
+
+
     def _make_api_call(self):
         self._setup_request()
 
@@ -152,6 +158,8 @@ class ConsulACL(object):
             self.api_url = self.api_url + '?' + params
         if self.action == self.CREATE:
             self._add_create_body()
+        if self.action == self.UPDATE:
+            self._add_update_body()
         if self.action in self.PUT_ACTIONS:
             if self.params:
                 self.req_data = json.dumps(self.params)
@@ -167,6 +175,17 @@ class ConsulACL(object):
 
     def _add_create_body(self):
         valid_attrs = {
+          "name": "Name",
+          "acl_type": "Type",
+          "rules": "Rules"
+        }
+        for attr, name in valid_attrs.iteritems():
+            if hasattr(self, attr) and getattr(self, attr):
+                self.params[name] = getattr(self, attr)
+
+    def _add_update_body(self):
+        valid_attrs = {
+          "acl_id": "ID",
           "name": "Name",
           "acl_type": "Type",
           "rules": "Rules"
@@ -192,6 +211,7 @@ def main():
     module = AnsibleModule(
         argument_spec=dict(
             acl_type=dict(required=False, default='client'),
+            acl_id=dict(required=False, default=''),
             action=dict(required=True),
             dc=dict(required=False, default='dc1'),
             host=dict(required=False, default='127.0.0.1'),

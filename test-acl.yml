@@ -17,9 +17,39 @@
       tags:
         - acl
 
+    - name: Validate ACL create returns ID
+      fail:
+        msg: "Create did not return an ID: {{ new_acl_defaults.value }}"
+      when: not new_acl_defaults.value.ID
+      tags:
+        - acl
+
     - name: Debug new acl with defaults
       debug:
         var: new_acl_defaults
       when: new_acl_defaults is defined
       tags:
-        - new_acl_defaults
+        - acl
+
+    - name: Update ACL
+      consul_acl:
+        action: update
+        acl_id: "{{ new_acl_defaults.value.ID }}"
+        name: "updated-acl"
+        token: "{{ consul_acl_master_token }}"
+      register: updated_acl
+      tags:
+        - acl
+
+    - name: Debug updated ACL
+      debug:
+        var: updated_acl
+      tags:
+        - acl
+
+    - name: Validate updated ACL
+      fail:
+        msg: "Updated ACL ID is not the same as requested ID"
+      when: updated_acl.value.ID != new_acl_defaults.value.ID
+      tags:
+        - acl
