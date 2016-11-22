@@ -34,6 +34,11 @@ An Ansible module to interact with consul's API from your playbooks and roles.
   consul_acl:
     action: list
     token: "master-token"
+
+- name: Get ACL replication
+  consul_acl:
+    action: replication
+    token: "master-token"
 ```
 
 #### Documentation
@@ -498,7 +503,7 @@ Then you can run the test playbook with `ansible-playbook -i ./hosts test-consul
   - [ ]  `/v1/acl/info/<id>`
   - [ ]  `/v1/acl/clone/<id>`
   - [x]  `/v1/acl/list`
-  - [ ]  `/v1/acl/replication`
+  - [x]  `/v1/acl/replication`
 - Agent API
   - [ ] `/v1/agent/checks`
   - [ ] `/v1/agent/services`

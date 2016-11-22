@@ -3,6 +3,7 @@
 - acl: create added
 - acl: update added
 - acl: list added
+- acl: replication query added
 
 # v0.4.0
 

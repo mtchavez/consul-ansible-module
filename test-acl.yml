@@ -65,5 +65,21 @@
     - name: Validate ACL list
       fail:
         msg: "ACL list should have items"
-      when: acl_list|length == 0
+      when: acl_list.value|length|int == 0
+      tags:
+        - acl
 
+    - name: Get ACL replication
+      consul_acl:
+        action: replication
+        token: "{{ consul_acl_master_token }}"
+      register: acl_replication
+      tags:
+        - acl
+
+    - name: Validate ACL replication datacenter is empty when off
+      fail:
+        msg: "ACL list should have items"
+      when: acl_replication.value.Enabled|bool == False and acl_replication.value.SourceDatacenter != ""
+      tags:
+        - acl

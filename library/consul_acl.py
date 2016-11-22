@@ -87,6 +87,11 @@ EXAMPLES = '''
   consul_acl:
     action: list
     token: "master-token"
+
+- name: Get ACL replication
+  consul_acl:
+    action: replication
+    token: "master-token"
 '''
 
 #
@@ -96,11 +101,11 @@ EXAMPLES = '''
 
 class ConsulACL(object):
 
-    ALLOWED_ACTIONS = ['create', 'update', 'list']
-    CREATE, UPDATE, LIST = ALLOWED_ACTIONS
+    ALLOWED_ACTIONS = ['create', 'update', 'list', 'replication']
+    CREATE, UPDATE, LIST, REPLICATION = ALLOWED_ACTIONS
 
     PUT_ACTIONS = [CREATE, UPDATE]
-    GET_ACTIONS = [LIST]
+    GET_ACTIONS = [LIST, REPLICATION]
 
     def __init__(self, module):
         """Takes an AnsibleModule object to set up Consul Event interaction"""
