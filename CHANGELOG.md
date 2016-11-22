@@ -1,3 +1,9 @@
+# Unreleased
+
+- acl: create added
+- acl: update added
+- acl: list added
+
 # v0.4.0
 
 - Update existing modules (k/v, session, status) to ansible standards
