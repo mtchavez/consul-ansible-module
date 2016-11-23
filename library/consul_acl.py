@@ -98,6 +98,12 @@ EXAMPLES = '''
     action: info
     acl_id: "asdf-1234-asdf-1234"
     token: "master-token"
+
+- name: Destroy ACL
+  consul_acl:
+    action: destroy
+    acl_id: "asdf-1234-asdf-1234"
+    token: "master-token"
 '''
 
 #
@@ -107,11 +113,12 @@ EXAMPLES = '''
 
 class ConsulACL(object):
 
-    ALLOWED_ACTIONS = ['create', 'update', 'list', 'replication', 'info']
-    CREATE, UPDATE, LIST, REPLICATION, INFO = ALLOWED_ACTIONS
+    ALLOWED_ACTIONS = ['create', 'update', 'list', 'replication', 'info', 'destroy']
+    CREATE, UPDATE, LIST, REPLICATION, INFO, DESTROY = ALLOWED_ACTIONS
 
-    PUT_ACTIONS = [CREATE, UPDATE]
+    PUT_ACTIONS = [CREATE, UPDATE, DESTROY]
     GET_ACTIONS = [LIST, REPLICATION, INFO]
+    ID_PATH_ACTIONS = [INFO, DESTROY]
 
     def __init__(self, module):
         """Takes an AnsibleModule object to set up Consul Event interaction"""
@@ -143,7 +150,7 @@ class ConsulACL(object):
 
     def _build_url(self):
         self.api_url = "http://%s:%s/%s/acl/%s" % (self.host, self.port, self.version, self.action)
-        if self.action == self.INFO:
+        if self.action in self.ID_PATH_ACTIONS:
             self.api_url += "/%s" % self.acl_id
 
     def _http_verb_for_action(self):

@@ -106,3 +106,19 @@
       when: acl_info.value[0].ID != new_acl_defaults.value.ID
       tags:
         - acl
+
+    - name: Destroy ACL
+      consul_acl:
+        action: destroy
+        acl_id: "{{ new_acl_defaults.value.ID }}"
+        token: "{{ consul_acl_master_token }}"
+      register: acl_deleted
+      tags:
+        - acl
+
+    - name: Validate ACL deleted
+      fail:
+        msg: "ACL destroy should have succeeded"
+      when: acl_deleted|failed
+      tags:
+        - acl
