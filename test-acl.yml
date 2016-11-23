@@ -83,3 +83,26 @@
       when: acl_replication.value.Enabled|bool == False and acl_replication.value.SourceDatacenter != ""
       tags:
         - acl
+
+    - name: Get ACL info
+      consul_acl:
+        action: info
+        acl_id: "{{ new_acl_defaults.value.ID }}"
+        token: "{{ consul_acl_master_token }}"
+      register: acl_info
+      tags:
+        - acl
+
+    - name: Validate ACL info length
+      fail:
+        msg: "ACL list should have at least 1 item"
+      when: acl_info.value|length|int < 1
+      tags:
+        - acl
+
+    - name: Validate ACL info ID
+      fail:
+        msg: "ACL list should have correct ID {{ new_acl_defaults.value.ID }}"
+      when: acl_info.value[0].ID != new_acl_defaults.value.ID
+      tags:
+        - acl

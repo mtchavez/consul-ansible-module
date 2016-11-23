@@ -4,6 +4,7 @@
 - acl: update added
 - acl: list added
 - acl: replication query added
+- acl: info added
 
 # v0.4.0
 

@@ -92,6 +92,12 @@ EXAMPLES = '''
   consul_acl:
     action: replication
     token: "master-token"
+
+- name: Get ACL info
+  consul_acl:
+    action: info
+    acl_id: "asdf-1234-asdf-1234"
+    token: "master-token"
 '''
 
 #
@@ -101,11 +107,11 @@ EXAMPLES = '''
 
 class ConsulACL(object):
 
-    ALLOWED_ACTIONS = ['create', 'update', 'list', 'replication']
-    CREATE, UPDATE, LIST, REPLICATION = ALLOWED_ACTIONS
+    ALLOWED_ACTIONS = ['create', 'update', 'list', 'replication', 'info']
+    CREATE, UPDATE, LIST, REPLICATION, INFO = ALLOWED_ACTIONS
 
     PUT_ACTIONS = [CREATE, UPDATE]
-    GET_ACTIONS = [LIST, REPLICATION]
+    GET_ACTIONS = [LIST, REPLICATION, INFO]
 
     def __init__(self, module):
         """Takes an AnsibleModule object to set up Consul Event interaction"""
@@ -137,6 +143,8 @@ class ConsulACL(object):
 
     def _build_url(self):
         self.api_url = "http://%s:%s/%s/acl/%s" % (self.host, self.port, self.version, self.action)
+        if self.action == self.INFO:
+            self.api_url += "/%s" % self.acl_id
 
     def _http_verb_for_action(self):
         if self.action in self.PUT_ACTIONS:
@@ -147,6 +155,9 @@ class ConsulACL(object):
         if not self.acl_id:
             self.module.fail_json(msg='An ACL ID is required when updating an ACL')
 
+    def _validate_info(self):
+        if not self.acl_id:
+            self.module.fail_json(msg='An ACL ID is required when getting info for ACL')
 
     def _make_api_call(self):
         self._setup_request()
