@@ -107,6 +107,22 @@
       tags:
         - acl
 
+    - name: Clone ACL
+      consul_acl:
+        action: clone
+        acl_id: "{{ new_acl_defaults.value.ID }}"
+        token: "{{ consul_acl_master_token }}"
+      register: acl_clone
+      tags:
+        - acl
+
+    - name: Validate ACL cloned
+      fail:
+        msg: "ACL clone should have succeeded with new ID"
+      when: acl_clone|failed or acl_clone.value.ID == new_acl_defaults.value.ID
+      tags:
+        - acl
+
     - name: Destroy ACL
       consul_acl:
         action: destroy

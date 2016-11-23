@@ -6,6 +6,7 @@
 - acl: replication query added
 - acl: info added
 - acl: destroy added
+- acl: clone added
 
 # v0.4.0
 

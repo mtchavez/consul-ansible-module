@@ -104,6 +104,12 @@ EXAMPLES = '''
     action: destroy
     acl_id: "asdf-1234-asdf-1234"
     token: "master-token"
+
+- name: Clone ACL
+  consul_acl:
+    action: clone
+    acl_id: "asdf-1234-asdf-1234"
+    token: "master-token"
 '''
 
 #
@@ -113,12 +119,12 @@ EXAMPLES = '''
 
 class ConsulACL(object):
 
-    ALLOWED_ACTIONS = ['create', 'update', 'list', 'replication', 'info', 'destroy']
-    CREATE, UPDATE, LIST, REPLICATION, INFO, DESTROY = ALLOWED_ACTIONS
+    ALLOWED_ACTIONS = ['create', 'update', 'list', 'replication', 'info', 'destroy', 'clone']
+    CREATE, UPDATE, LIST, REPLICATION, INFO, DESTROY, CLONE = ALLOWED_ACTIONS
 
-    PUT_ACTIONS = [CREATE, UPDATE, DESTROY]
+    PUT_ACTIONS = [CREATE, UPDATE, DESTROY, CLONE]
     GET_ACTIONS = [LIST, REPLICATION, INFO]
-    ID_PATH_ACTIONS = [INFO, DESTROY]
+    ID_PATH_ACTIONS = [INFO, DESTROY, CLONE]
 
     def __init__(self, module):
         """Takes an AnsibleModule object to set up Consul Event interaction"""
